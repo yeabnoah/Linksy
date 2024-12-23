@@ -1,7 +1,10 @@
 "use client";
 
+import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
-import { Loader2 } from "lucide-react";
+import { EyeClosedIcon, EyeIcon, Loader2 } from "lucide-react";
+import Link from "next/link";
+import { redirect } from "next/navigation";
 import { useState } from "react";
 import { Button } from "../../../components/ui/button";
 import {
@@ -12,18 +15,14 @@ import {
   CardHeader,
   CardTitle,
 } from "../../../components/ui/card";
-import { Checkbox } from "../../../components/ui/checkbox";
 import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
-import { authClient } from "@/lib/auth-client";
-import Link from "next/link";
-import { redirect } from "next/navigation";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
+  const [show, setShow] = useState(false);
 
   const session = authClient.useSession();
 
@@ -61,24 +60,29 @@ export default function SignIn() {
                 <Label htmlFor="password">Password</Label>
               </div>
 
-              <Input
-                id="password"
-                type="password"
-                placeholder="password"
-                autoComplete="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id="remember"
-                onClick={() => {
-                  setRememberMe(!rememberMe);
-                }}
-              />
-              <Label htmlFor="remember">Remember me</Label>
+              <div className=" flex flex-row items-center">
+                <Input
+                  className=" border-r-0 rounded-r-none"
+                  id="password"
+                  type={show ? "text" : "password"}
+                  placeholder="password"
+                  autoComplete="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <Button
+                  className=" rounded-l-none bg-transparent  border hover:bg-transparent "
+                  onClick={() => {
+                    setShow(!show);
+                  }}
+                >
+                  {show ? (
+                    <EyeClosedIcon className=" text-white" />
+                  ) : (
+                    <EyeIcon className=" text-white" />
+                  )}
+                </Button>
+              </div>
             </div>
 
             <Button

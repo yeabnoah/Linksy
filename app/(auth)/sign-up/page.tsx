@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
-import { Loader2, X } from "lucide-react";
+import { EyeClosedIcon, EyeIcon, Loader2, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect, useRouter } from "next/navigation";
@@ -29,6 +29,7 @@ export default function SignUpPage() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -100,20 +101,34 @@ export default function SignUpPage() {
             </div>
             <div className="grid gap-2">
               <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoComplete="new-password"
-                placeholder="Password"
-              />
+              <div className=" flex flex-row items-center">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoComplete="new-password"
+                  placeholder="Password"
+                />
+                <Button
+                  className=" rounded-l-none bg-transparent  border hover:bg-transparent "
+                  onClick={() => {
+                    setShowPassword(!showPassword);
+                  }}
+                >
+                  {showPassword ? (
+                    <EyeClosedIcon className=" text-white" />
+                  ) : (
+                    <EyeIcon className=" text-white" />
+                  )}
+                </Button>
+              </div>
             </div>
             <div className="grid gap-2">
               <Label htmlFor="password">Confirm Password</Label>
               <Input
                 id="password_confirmation"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={passwordConfirmation}
                 onChange={(e) => setPasswordConfirmation(e.target.value)}
                 autoComplete="new-password"
