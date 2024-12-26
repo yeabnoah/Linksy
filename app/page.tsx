@@ -37,71 +37,72 @@ export default function Home() {
   return (
     <div className="flex min-h-screen">
       <Sidebar />
-      <main className="flex-1 md:ml-64">
-        <div className="max-w-7xl mx-auto px-6 py-8">
-          <div className="flex justify-between items-center mb-8">
-            <h1 className="text-xl font-md tracking-sidebar dark:text-white">
-              My memory
-            </h1>
-            <div className="flex items-center gap-3">
-              <Button
-                variant="outline"
-                className="font-medium flex items-center justify-center text-center text-primary hover:text-primary hover:bg-primary/10 border-primary/20"
-                onClick={() => setIsShareModalOpen(true)}
-              >
-                <Share2 className="w-4 h-4 md:mr-2" />
-                <span className=" hidden md:block">Share Brain</span>
-              </Button>
-              <Button
-                className="font-medium flex justify-center items-center text-center bg-primary hover:bg-primary/90 transition-colors"
-                onClick={() => setIsAddContentModalOpen(true)}
-              >
-                <Plus className="w-4 h-4 md:mr-2" />
-                <span className=" hidden md:block">Add Content</span>
-              </Button>
+      <div className="relative h-full w-full">
+        <main className="flex-1 md:ml-72">
+          <div className="max-w-7xl mx-auto px-6 py-8">
+            <div className="flex justify-between items-center mb-8">
+              <h1 className="text-xl font-md tracking-sidebar dark:text-white">
+                My memory
+              </h1>
+              <div className="flex items-center gap-3">
+                <Button
+                  variant="outline"
+                  className="font-medium flex items-center justify-center text-center text-primary hover:text-primary hover:bg-primary/10 border-primary/20"
+                  onClick={() => setIsShareModalOpen(true)}
+                >
+                  <Share2 className="w-4 h-4 md:mr-2" />
+                  <span className=" hidden md:block">Share Memory</span>
+                </Button>
+                <Button
+                  className="font-medium flex justify-center items-center text-center bg-primary hover:bg-primary/90 transition-colors"
+                  onClick={() => setIsAddContentModalOpen(true)}
+                >
+                  <Plus className="w-4 h-4 md:mr-2" />
+                  <span className=" hidden md:block">Add Memory</span>
+                </Button>
+              </div>
             </div>
+
+            {isLoading ? (
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <NoteCardSkeleton />
+                <NoteCardSkeleton />
+                <NoteCardSkeleton />
+                <NoteCardSkeleton />
+                <NoteCardSkeleton />
+                <NoteCardSkeleton />
+              </div>
+            ) : (
+              <div className="grid gap-3 grid-cols-3">
+                {contents?.map((each) => {
+                  return (
+                    <NoteCard
+                      description={(each?.description as string) || ""}
+                      key={each.id}
+                      title={each.title}
+                      link={each.link}
+                      tags={each.tags}
+                      type={each.type}
+                    />
+                  );
+                })}
+              </div>
+            )}
           </div>
 
-          {isLoading ? (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              <NoteCardSkeleton />
-              <NoteCardSkeleton />
-              <NoteCardSkeleton />
-              <NoteCardSkeleton />
-              <NoteCardSkeleton />
-              <NoteCardSkeleton />
-              <NoteCardSkeleton />
-              <NoteCardSkeleton />
-              <NoteCardSkeleton />
-            </div>
-          ) : (
-            <div className="grid gap-3 grid-cols-3">
-              {contents?.map((each) => {
-                return (
-                  <NoteCard
-                    description={(each?.description as string) || ""}
-                    key={each.id}
-                    title={each.title}
-                    link={each.link}
-                    tags={each.tags}
-                    type={each.type}
-                  />
-                );
-              })}
-            </div>
-          )}
-        </div>
-
-        <ShareModal
-          isOpen={isShareModalOpen}
-          onClose={() => setIsShareModalOpen(false)}
-          itemCount={3}
-        />
-        <AddContentModal
-          isOpen={isAddContentModalOpen}
-          onClose={() => setIsAddContentModalOpen(false)}
-        />
-      </main>
+          <ShareModal
+            isOpen={isShareModalOpen}
+            onClose={() => setIsShareModalOpen(false)}
+            itemCount={3}
+          />
+          <AddContentModal
+            isOpen={isAddContentModalOpen}
+            onClose={() => setIsAddContentModalOpen(false)}
+          />
+        </main>
+        <div className="absolute bottom-0 left-[-20%] right-0 top-[-10%] h-[500px] w-[500px] rounded-full bg-[radial-gradient(circle_farthest-side,rgba(255,0,182,.15),rgba(255,255,255,0))]"></div>
+        <div className="absolute bottom-0 right-[-20%] top-[-10%] h-[500px] w-[500px] rounded-full bg-[radial-gradient(circle_farthest-side,rgba(255,0,182,.15),rgba(255,255,255,0))]"></div>
+      </div>
     </div>
   );
 }
