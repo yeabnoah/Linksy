@@ -1,51 +1,122 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Twitter, Video, FileText, LinkIcon, Hash } from 'lucide-react'
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import {
+  DockIcon,
+  InstagramIcon,
+  TelescopeIcon,
+  TwitterIcon,
+  YoutubeIcon,
+} from "lucide-react";
+import { useState } from "react";
+import toast from "react-hot-toast";
 
 interface AddContentModalProps {
-  isOpen: boolean
-  onClose: () => void
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 const contentTypes = [
-  { value: "tweet", label: "Tweet", icon: <Twitter className="w-4 h-4" /> },
-  { value: "video", label: "Video", icon: <Video className="w-4 h-4" /> },
-  { value: "document", label: "Document", icon: <FileText className="w-4 h-4" /> },
-  { value: "link", label: "Link", icon: <LinkIcon className="w-4 h-4" /> },
-  { value: "tag", label: "Tag", icon: <Hash className="w-4 h-4" /> },
-]
+  {
+    value: "twitter",
+    label: "Tweet",
+    icon: <TwitterIcon className="w-4 h-4" />,
+  },
+  {
+    value: "youtube",
+    label: "Youtube",
+    icon: <YoutubeIcon className="w-4 h-4" />,
+  },
+  {
+    value: "instagram",
+    label: "Instagram",
+    icon: <InstagramIcon className="w-4 h-4" />,
+  },
+  {
+    value: "telegram",
+    label: "Telegram",
+    icon: <TelescopeIcon className="w-4 h-4" />,
+  },
+  {
+    value: "article",
+    label: "Article",
+    icon: <DockIcon className="w-4 h-4" />,
+  },
+];
 
 export function AddContentModal({ isOpen, onClose }: AddContentModalProps) {
-  const [contentType, setContentType] = useState<string>("")
-  const [title, setTitle] = useState("")
-  const [content, setContent] = useState("")
-  const [link, setLink] = useState("")
-  const [tags, setTags] = useState("")
+  const [contentType, setContentType] = useState<string>("");
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [link, setLink] = useState("");
+  const [tagsInput, setTagsInput] = useState("");
+
+  const mutation = useMutation({
+    mutationFn: async () => {
+      const tags = tagsInput.split(",").map((tag) => tag.trim());
+      const response = await axios.post(
+        "/api/v1/content",
+        {
+          title,
+          link,
+          type: contentType,
+          tags,
+          description: content,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    },
+    onMutate: () => {
+      toast.loading("Adding content...");
+    },
+    onSuccess: () => {
+      toast.dismiss();
+      toast.success("Content added successfully!");
+      onClose();
+    },
+    onError: (error) => {
+      toast.dismiss();
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "An error occurred while adding content."
+      );
+    },
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log({ contentType, title, content, link, tags: tags.split(",").map(tag => tag.trim()) })
-    onClose()
-  }
+    e.preventDefault();
+    mutation.mutate();
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold tracking-tight">Add Content</DialogTitle>
+          <DialogTitle className="text-xl font-semibold tracking-tight">
+            Add Content
+          </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2.5">
@@ -58,8 +129,8 @@ export function AddContentModal({ isOpen, onClose }: AddContentModalProps) {
               </SelectTrigger>
               <SelectContent>
                 {contentTypes.map((type) => (
-                  <SelectItem 
-                    key={type.value} 
+                  <SelectItem
+                    key={type.value}
                     value={type.value}
                     className="font-medium"
                   >
@@ -121,22 +192,22 @@ export function AddContentModal({ isOpen, onClose }: AddContentModalProps) {
             </Label>
             <Input
               id="tags"
-              value={tags}
-              onChange={(e) => setTags(e.target.value)}
+              value={tagsInput}
+              onChange={(e) => setTagsInput(e.target.value)}
               placeholder="Enter tags separated by commas"
               className="w-full"
             />
           </div>
 
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             className="w-full bg-primary hover:bg-primary/90 transition-colors"
+            disabled={mutation.isPending}
           >
-            Add Content
+            {mutation.isPending ? "Adding..." : "Add Content"}
           </Button>
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
-

@@ -1,22 +1,29 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Share2, Trash2, TwitterIcon } from "lucide-react";
+import { Tweet } from "react-tweet";
 
 interface NoteCardProps {
   title: string;
-  content: string;
-  date: string;
   tags: string[];
   type: string;
+  description: string;
+  link: string;
 }
 
-export function NoteCard({ title, content, date, tags, type }: NoteCardProps) {
+export function NoteCard({
+  title,
+  link,
+  tags,
+  type,
+  description,
+}: NoteCardProps) {
   return (
-    <Card className="group overflow-hidden transition-all duration-200 hover:shadow-lg hover:border-primary/20">
+    <Card className="group overflow-hidden w-96 transition-all duration-200 hover:shadow-lg rounded-sm shadow-none">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <div className="flex items-center gap-3">
           <div className="text-primary/80">
-            {type === "news" && <TwitterIcon size={16} />}
+            {type === "twitter" && <TwitterIcon size={16} />}
           </div>
           <h2 className="text-lg font-semibold tracking-tight">{title}</h2>
         </div>
@@ -39,9 +46,22 @@ export function NoteCard({ title, content, date, tags, type }: NoteCardProps) {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
+          <div className="">
+            <div
+              style={{ display: "flex", justifyContent: "center" }}
+              className=" h-80"
+            >
+              {}
+              <Tweet id="1356633038717923333" />
+            </div>
+          </div>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            {content}
+            {description}
           </p>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            {link}
+          </p>
+
           <div className="flex flex-wrap gap-2">
             {tags.map((tag) => (
               <span
@@ -52,7 +72,6 @@ export function NoteCard({ title, content, date, tags, type }: NoteCardProps) {
               </span>
             ))}
           </div>
-          <p className="text-xs text-muted-foreground">Added on {date}</p>
         </div>
       </CardContent>
     </Card>

@@ -35,12 +35,12 @@ export default function Home() {
   });
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen">
       <Sidebar />
       <main className="flex-1 md:ml-64">
-        <div className="max-w-6xl mx-auto px-6 py-8">
+        <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="flex justify-between items-center mb-8">
-            <h1 className="text-3xl font-bold tracking-sidebar mutight">
+            <h1 className="text-xl font-md tracking-sidebar dark:text-white">
               My memory
             </h1>
             <div className="flex items-center gap-3">
@@ -69,14 +69,14 @@ export default function Home() {
               <NoteCardSkeleton />
             </div>
           ) : (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-3 grid-cols-3">
               {contents?.map((each) => {
                 return (
                   <NoteCard
+                    description={(each?.description as string) || ""}
                     key={each.id}
                     title={each.title}
-                    content={each.link}
-                    date="10/03/2024"
+                    link={each.link}
                     tags={each.tags}
                     type={each.type}
                   />

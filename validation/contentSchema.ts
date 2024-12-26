@@ -24,6 +24,7 @@ const ContentSchema = z.object({
     .array(z.string(), { required_error: "Tags are required." })
     .nonempty("Tags cannot be empty."),
   userId: z.string({ required_error: "User ID is required." }),
+  description: z.string().optional(),
 });
 
 // Infer the TypeScript type from the schema

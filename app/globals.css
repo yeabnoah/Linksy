@@ -25,7 +25,7 @@
     --ring: 262 83% 58%;
     --radius: 0.75rem;
   }
- 
+
   .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
@@ -72,4 +72,3 @@
     transform: translateY(0);
   }
 }
-

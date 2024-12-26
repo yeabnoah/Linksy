@@ -39,27 +39,31 @@ export const GET = async () => {
 export const POST = async (req: NextRequest) => {
   try {
     const body = await req.json();
-
     const session = await getUserSession();
     if (!session) {
-      return NextResponse.json({
-        success: false,
-        message: "you are not authorized",
-        error: "authentication",
-        data: null,
-      });
+      return NextResponse.json(
+        {
+          success: false,
+          message: "you are not authorized",
+          error: "authentication",
+          data: null,
+        },
+        {
+          status: 400,
+        }
+      );
     }
 
-    const newContent = {
-      title: body.title,
-      link: body.link,
-      type: body.type,
-      tags: body.tags,
-      userId: session.user.id,
-    };
-
+    // console.log("test");
     const createdContent = await prisma.content.create({
-      data: newContent,
+      data: {
+        title: body.title,
+        link: body.link,
+        description: body.description,
+        type: body.type,
+        tags: body.tags,
+        userId: session?.user?.id,
+      },
     });
 
     return NextResponse.json({
@@ -69,11 +73,14 @@ export const POST = async (req: NextRequest) => {
       data: createdContent,
     });
   } catch (error) {
-    return NextResponse.json({
-      success: false,
-      message: "unknown error happened",
-      error: error,
-      data: null,
-    });
+    return NextResponse.json(
+      {
+        success: false,
+        message: "unknown error happened",
+        error: error,
+        data: null,
+      },
+      { status: 500 }
+    );
   }
 };
