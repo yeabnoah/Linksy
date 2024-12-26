@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ["latin"] });
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Second Memory",
+  title: "the Bookmark",
   description: "Your digital knowledge base",
 };
 

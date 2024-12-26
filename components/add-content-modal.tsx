@@ -113,7 +113,7 @@ export function AddContentModal({ isOpen, onClose }: AddContentModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md rounded-none">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold tracking-tight">
             Add Content

@@ -42,7 +42,7 @@ export default function Home() {
           <div className="max-w-7xl mx-auto px-6 py-8">
             <div className="flex justify-between items-center mb-8">
               <h1 className="text-xl font-md tracking-sidebar dark:text-white">
-                My memory
+                My Bookmark
               </h1>
               <div className="flex items-center gap-3">
                 <Button
@@ -77,6 +77,7 @@ export default function Home() {
                 {contents?.map((each) => {
                   return (
                     <NoteCard
+                      id={each.id}
                       description={(each?.description as string) || ""}
                       key={each.id}
                       title={each.title}
@@ -100,8 +101,6 @@ export default function Home() {
             onClose={() => setIsAddContentModalOpen(false)}
           />
         </main>
-        <div className="absolute bottom-0 left-[-20%] right-0 top-[-10%] h-[500px] w-[500px] rounded-full bg-[radial-gradient(circle_farthest-side,rgba(255,0,182,.15),rgba(255,255,255,0))]"></div>
-        <div className="absolute bottom-0 right-[-20%] top-[-10%] h-[500px] w-[500px] rounded-full bg-[radial-gradient(circle_farthest-side,rgba(255,0,182,.15),rgba(255,255,255,0))]"></div>
       </div>
     </div>
   );

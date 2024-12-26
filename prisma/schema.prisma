@@ -22,6 +22,11 @@ enum type {
   link
   article
   news
+  linkedin
+  tiktok
+  discord
+  reddit
+  slack
 }
 
 

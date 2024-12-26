@@ -1,16 +1,21 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
+  InstagramIcon,
   MessageSquareIcon,
   Share2,
   Trash2,
   TwitterIcon,
   YoutubeIcon,
 } from "lucide-react";
-import { XEmbed, YouTubeEmbed } from "react-social-media-embed";
+import { InstagramEmbed, XEmbed, YouTubeEmbed } from "react-social-media-embed";
 import TelegramPost from "./telegramEmbed";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import axios from "axios";
 
 interface NoteCardProps {
+  id: number;
   title: string;
   tags: string[];
   type: string;
@@ -19,36 +24,67 @@ interface NoteCardProps {
 }
 
 export function NoteCard({
+  id,
   title,
   link,
   tags,
   type,
   description,
 }: NoteCardProps) {
+  const queryClient = useQueryClient();
+
+  // Mutation for deleting a note
+  const deleteNoteMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await axios.delete(`/api/v1/content/${id}`, {
+        withCredentials: true,
+      });
+      return response.data;
+    },
+    onSuccess: () => {
+      toast.success("Note deleted successfully!");
+      // Invalidate related queries to refresh the data
+      // queryClient.invalidateQueries([/"notes"]);
+    },
+    onError: (error: any) => {
+      toast.error(
+        error?.response?.data?.message || "Failed to delete the note."
+      );
+    },
+  });
+
+  const handleDelete = () => {
+    deleteNoteMutation.mutate(id);
+  };
+
   return (
-    <Card className="  group overflow-hidden h-fit w-96 rounded-md shadow-sm transition-transform duration-200 hover:shadow-md hover:-translate-y-1">
-      <div className="relative h-full w-full bg-slate-950"></div>
+    <Card className="my-5 rounded-sm group overflow-hidden h-fit w-96 shadow-sm transition-transform duration-200 hover:shadow-md hover:-translate-y-1">
       {type === "twitter" && (
-        <div className=" flex flex-row items-center p-3 gap-3  border-b text-black  border-b-black/10">
+        <div className="flex flex-row items-center p-3 gap-3 border-b text-black border-b-black/10">
           <TwitterIcon className="text-black w-5 h-5" />
           <p>Twitter</p>
         </div>
       )}
       {type === "youtube" && (
-        <div className=" flex flex-row items-center p-3 gap-3  border-b text-black  border-b-black/10">
+        <div className="flex flex-row items-center p-3 gap-3 border-b text-black border-b-black/10">
           <YoutubeIcon className="text-black w-5 h-5" />
           <p>Youtube</p>
         </div>
       )}
       {type === "telegram" && (
-        <div className=" flex flex-row items-center p-3 gap-3  border-b text-black  border-b-black/10">
+        <div className="flex flex-row items-center p-3 gap-3 border-b text-black border-b-black/10">
           <MessageSquareIcon className="text-black w-5 h-5" />
           <p>Telegram</p>
         </div>
       )}
-      <CardHeader
-        className={`flex  shadow-none items-center flex-row justify-between space-y-0 pb-2 border-b`}
-      >
+      {type === "instagram" && (
+        <div className="flex flex-row items-center p-3 gap-3 border-b text-black border-b-black/10">
+          <InstagramIcon className="text-black w-5 h-5" />
+          <p>Instagram</p>
+        </div>
+      )}
+
+      <CardHeader className="flex shadow-none items-center flex-row justify-between space-y-0 pb-2 border-b">
         <div className="flex items-center gap-3">
           <h2 className="text-lg font-semibold tracking-tight text-foreground">
             {title}
@@ -56,13 +92,7 @@ export function NoteCard({
         </div>
         <div className="flex gap-2">
           <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 hover:bg-primary/10 hover:text-primary"
-          >
-            <Share2 className="w-4 h-4" />
-          </Button>
-          <Button
+            onClick={handleDelete}
             variant="ghost"
             size="icon"
             className="h-8 w-8 hover:bg-destructive/10 hover:text-destructive"
@@ -78,6 +108,9 @@ export function NoteCard({
           )}
           {type === "youtube" && (
             <YouTubeEmbed url={link} className="h-32 w-full rounded-md" />
+          )}
+          {type === "instagram" && (
+            <InstagramEmbed url={link} className="h-32 w-full rounded-md" />
           )}
           {type === "telegram" && <TelegramPost type="telegram" link={link} />}
         </div>
