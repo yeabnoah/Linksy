@@ -46,7 +46,7 @@ export default function SignUpPage() {
   const session = authClient.useSession();
 
   if (session.data?.user) {
-    redirect("/dashboard");
+    redirect("/");
   }
 
   return (
@@ -178,7 +178,7 @@ export default function SignUpPage() {
                   password,
                   name: `${firstName} ${lastName}`,
                   image: image ? await convertImageToBase64(image) : "",
-                  callbackURL: "/dashboard",
+                  callbackURL: "/",
                   fetchOptions: {
                     onResponse: () => {
                       setLoading(false);
@@ -190,7 +190,7 @@ export default function SignUpPage() {
                       toast.error(ctx.error.message);
                     },
                     onSuccess: async () => {
-                      router.push("/dashboard");
+                      router.push("/");
                     },
                   },
                 });

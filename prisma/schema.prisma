@@ -29,6 +29,7 @@ model Content {
   id Int @id @default(autoincrement())
   title String
   link String
+  description String?
   type type
   tags String[]
   userId String

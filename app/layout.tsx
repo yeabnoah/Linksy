@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { Space_Grotesk } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
+import QueryProviderComponent from "@/hooks/QueryProvider";
 
-const spaceGrotesk = Space_Grotesk({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "My Next.js App",
-  description: "A beautifully crafted Next.js application.",
+  title: "Second Brain",
+  description: "Your digital knowledge base",
 };
 
 export default function RootLayout({
@@ -15,10 +16,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
-      <body className={`${spaceGrotesk.className} dark:bg-black`}>
-        {children}
-      </body>
+    <html lang="en">
+      <QueryProviderComponent>
+        <body className={inter.className}>{children}</body>
+      </QueryProviderComponent>
     </html>
   );
 }

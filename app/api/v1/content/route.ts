@@ -1,9 +1,6 @@
 import prisma from "@/lib/prisma";
 import getUserSession from "@/util/getUserData";
-import { ContentInterface } from "@/validation/contentSchema";
-import { error } from "console";
 import { NextRequest, NextResponse } from "next/server";
-import { title } from "process";
 
 export const GET = async () => {
   try {
