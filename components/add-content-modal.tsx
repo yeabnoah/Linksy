@@ -27,7 +27,7 @@ import {
   YoutubeIcon,
 } from "lucide-react";
 import { useState } from "react";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 
 interface AddContentModalProps {
   isOpen: boolean;
@@ -92,6 +92,7 @@ export function AddContentModal({ isOpen, onClose }: AddContentModalProps) {
     },
     onSuccess: () => {
       toast.dismiss();
+      // toast("Content added successfully!");
       toast.success("Content added successfully!");
       onClose();
     },
@@ -208,6 +209,7 @@ export function AddContentModal({ isOpen, onClose }: AddContentModalProps) {
           </Button>
         </form>
       </DialogContent>
+      <Toaster />
     </Dialog>
   );
 }

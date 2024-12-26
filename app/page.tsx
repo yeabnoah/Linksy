@@ -67,6 +67,12 @@ export default function Home() {
               <NoteCardSkeleton />
               <NoteCardSkeleton />
               <NoteCardSkeleton />
+              <NoteCardSkeleton />
+              <NoteCardSkeleton />
+              <NoteCardSkeleton />
+              <NoteCardSkeleton />
+              <NoteCardSkeleton />
+              <NoteCardSkeleton />
             </div>
           ) : (
             <div className="grid gap-3 grid-cols-3">

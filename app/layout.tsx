@@ -25,6 +25,13 @@ export default function RootLayout({
           </ThemeProvider>
         </body>
       </QueryProviderComponent>
+
+      <script
+        async
+        src="https://telegram.org/js/telegram-widget.js?15"
+        data-telegram-post="channel_name/post_id"
+        data-width="100%"
+      ></script>
     </html>
   );
 }

@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Share2, Trash2, TwitterIcon } from "lucide-react";
-import { Tweet } from "react-tweet";
+import { XEmbed, YouTubeEmbed } from "react-social-media-embed";
+import TelegramEmbed from "./telegramEmbed";
 
 interface NoteCardProps {
   title: string;
@@ -19,7 +20,7 @@ export function NoteCard({
   description,
 }: NoteCardProps) {
   return (
-    <Card className="group overflow-hidden w-96 transition-all duration-200 hover:shadow-lg rounded-sm shadow-none">
+    <Card className="group overflow-hidden h-fit w-96 transition-all duration-200 hover:shadow-lg rounded-sm shadow-none">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <div className="flex items-center gap-3">
           <div className="text-primary/80">
@@ -44,25 +45,61 @@ export function NoteCard({
           </Button>
         </div>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
+      <CardContent className=" h-fit">
+        <div className="">
           <div className="">
-            <div
-              style={{ display: "flex", justifyContent: "center" }}
-              className=" h-80"
-            >
-              {}
-              <Tweet id="1356633038717923333" />
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              {type === "twitter" && (
+                <div
+                  className=" "
+                  style={{ display: "flex", justifyContent: "center" }}
+                >
+                  <XEmbed url={link} className=" w-full" />
+                </div>
+              )}
+
+              {type === "youtube" && (
+                <div
+                  className=" rounded-md"
+                  style={{
+                    display: "flex",
+                    justifyContent: "center h-fit",
+                    padding: 5,
+                  }}
+                >
+                  <YouTubeEmbed
+                    url="https://www.youtube.com/watch?v=HpVOs5imUN0"
+                    className=" mx-auto rounded-md "
+                    // width={325}
+                    // height={220}
+                  />
+                </div>
+              )}
+
+              {type === "telegram" && (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    padding: 5,
+                  }}
+                >
+                  <TelegramEmbed link={link} />
+                </div>
+              )}
             </div>
           </div>
-          <p className="text-sm text-muted-foreground leading-relaxed">
+          <p className="text-sm my-3 text-muted-foreground leading-relaxed">
             {description}
           </p>
-          <p className="text-sm text-muted-foreground leading-relaxed">
+          <a
+            target="_blank"
+            className=" my-5 text-sm text-primary bg-primary/10 hover:cursor-pointer underline"
+          >
             {link}
-          </p>
+          </a>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex my-5 flex-wrap gap-2">
             {tags.map((tag) => (
               <span
                 key={tag}
