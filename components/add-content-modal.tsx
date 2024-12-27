@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { queryClient } from "@/util/query-client";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import {
@@ -94,6 +95,7 @@ export function AddContentModal({ isOpen, onClose }: AddContentModalProps) {
       toast.dismiss();
       // toast("Content added successfully!");
       toast.success("Content added successfully!");
+      queryClient.invalidateQueries();
       onClose();
     },
     onError: (error) => {

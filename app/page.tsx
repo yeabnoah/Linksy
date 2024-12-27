@@ -1,38 +1,28 @@
 "use client";
 
-import { AddContentModal } from "@/components/add-content-modal";
 import { NoteCard } from "@/components/note-card";
 import { NoteCardSkeleton } from "@/components/note-card-skeleton";
 import { ShareModal } from "@/components/share-modal";
+import { AddContentModal } from "@/components/add-content-modal";
 import { Sidebar } from "@/components/sidebar";
 import { Button } from "@/components/ui/button";
-import { ContentInterface } from "@/validation/contentSchema";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import { useBookmarkStore } from "@/state/bookmarkStore";
+import { useState, useEffect } from "react";
 import { Plus, Share2 } from "lucide-react";
-import { useState } from "react";
 
 export default function Home() {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isAddContentModalOpen, setIsAddContentModalOpen] = useState(false);
+  const { filteredBookmarks, currentFilter, refetchBookmarks } =
+    useBookmarkStore();
 
-  const {
-    data: contents,
-    isLoading,
-    // isError,
-  } = useQuery({
-    queryKey: ["contents"],
-    queryFn: async () => {
-      const response: { data: { data: ContentInterface[] } } = await axios.get(
-        "/api/v1/content",
-        {
-          withCredentials: true,
-        }
-      );
-      console.log(response.data.data);
-      return response.data.data;
-    },
-  });
+  const pageTitle = currentFilter
+    ? currentFilter.charAt(0).toUpperCase() + currentFilter.slice(1)
+    : "All Bookmarks";
+
+  useEffect(() => {
+    refetchBookmarks();
+  }, [refetchBookmarks]);
 
   return (
     <div className="flex min-h-screen">
@@ -42,7 +32,7 @@ export default function Home() {
           <div className="max-w-7xl mx-auto px-6 py-8">
             <div className="flex justify-between items-center mb-8">
               <h1 className="text-xl font-md tracking-sidebar dark:text-white">
-                My Bookmark
+                {pageTitle}
               </h1>
               <div className="flex items-center gap-3">
                 <Button
@@ -51,19 +41,19 @@ export default function Home() {
                   onClick={() => setIsShareModalOpen(true)}
                 >
                   <Share2 className="w-4 h-4 md:mr-2" />
-                  <span className=" hidden md:block">Share Memory</span>
+                  <span className="hidden md:block">Share Memory</span>
                 </Button>
                 <Button
                   className="font-medium flex justify-center items-center text-center bg-primary hover:bg-primary/90 transition-colors"
                   onClick={() => setIsAddContentModalOpen(true)}
                 >
                   <Plus className="w-4 h-4 md:mr-2" />
-                  <span className=" hidden md:block">Add Memory</span>
+                  <span className="hidden md:block">Add Memory</span>
                 </Button>
               </div>
             </div>
 
-            {isLoading ? (
+            {filteredBookmarks.length === 0 ? (
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 <NoteCardSkeleton />
                 <NoteCardSkeleton />
@@ -74,19 +64,17 @@ export default function Home() {
               </div>
             ) : (
               <div className="grid gap-3 grid-cols-3">
-                {contents?.map((each) => {
-                  return (
-                    <NoteCard
-                      id={each.id}
-                      description={(each?.description as string) || ""}
-                      key={each.id}
-                      title={each.title}
-                      link={each.link}
-                      tags={each.tags}
-                      type={each.type}
-                    />
-                  );
-                })}
+                {filteredBookmarks.map((each) => (
+                  <NoteCard
+                    id={each.id}
+                    description={(each?.description as string) || ""}
+                    key={each.id}
+                    title={each.title}
+                    link={each.link}
+                    tags={each.tags}
+                    type={each.type}
+                  />
+                ))}
               </div>
             )}
           </div>

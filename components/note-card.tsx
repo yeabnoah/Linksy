@@ -1,18 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 import {
   InstagramIcon,
   MessageSquareIcon,
-  Share2,
   Trash2,
   TwitterIcon,
   YoutubeIcon,
 } from "lucide-react";
+import toast from "react-hot-toast";
 import { InstagramEmbed, XEmbed, YouTubeEmbed } from "react-social-media-embed";
 import TelegramPost from "./telegramEmbed";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import toast from "react-hot-toast";
-import axios from "axios";
+import { queryClient } from "@/util/query-client";
 
 interface NoteCardProps {
   id: number;
@@ -31,9 +31,6 @@ export function NoteCard({
   type,
   description,
 }: NoteCardProps) {
-  const queryClient = useQueryClient();
-
-  // Mutation for deleting a note
   const deleteNoteMutation = useMutation({
     mutationFn: async (id: number) => {
       const response = await axios.delete(`/api/v1/content/${id}`, {
@@ -43,13 +40,10 @@ export function NoteCard({
     },
     onSuccess: () => {
       toast.success("Note deleted successfully!");
-      // Invalidate related queries to refresh the data
-      // queryClient.invalidateQueries([/"notes"]);
+      queryClient.invalidateQueries();
     },
-    onError: (error: any) => {
-      toast.error(
-        error?.response?.data?.message || "Failed to delete the note."
-      );
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to delete the note.");
     },
   });
 
