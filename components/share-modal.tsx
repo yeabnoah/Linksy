@@ -1,12 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { X, Copy } from "lucide-react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { queryClient } from "@/util/query-client";
 
 interface ShareModalProps {
   isOpen: boolean;
@@ -14,51 +13,51 @@ interface ShareModalProps {
   itemCount: number;
 }
 
-export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
-  const [isCopied, setIsCopied] = useState(false);
+interface dataComing {
+  data: {
+    id: number;
+    hash: string;
+    userId: string;
+  };
+  allowed: boolean;
+}
 
-  const { data, isLoading, error } = useQuery({
+export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
+  const [isSharing, setIsSharing] = useState(true);
+  const [isCopied, setIsCopied] = useState(false);
+  const [shareHash, setShareHash] = useState<string | null>(null);
+  const [allowed] = useState<boolean>(true);
+
+  const { data, isLoading, isSuccess } = useQuery({
     queryKey: ["hash"],
     queryFn: async () => {
       const response = await axios.get("/api/v1/brain/share", {
         withCredentials: true,
       });
-      return response.data;
+      console.log("------- ", response.data);
+      return response.data as dataComing;
     },
+    enabled: isOpen,
   });
 
-  const { mutate: toggleSharing } = useMutation({
-    mutationFn: async (shareApproved: boolean) => {
-      const response = await axios.post(
-        "/api/v1/brain/share",
-        { shareApproved },
-        { withCredentials: true }
-      );
-      return response.data;
-    },
-    onSuccess: () => {
-      // Refetch the data after successful mutation
-      queryClient.invalidateQueries();
-    },
-  });
+  useEffect(() => {
+    if (isSuccess && data?.allowed && data?.data.hash) {
+      setShareHash(data.data.hash);
+    }
+  }, [isSuccess, data]);
+
+  const handleStopSharing = () => {
+    setIsSharing(false);
+  };
 
   const handleCopyLink = async () => {
-    if (data?.data?.hash) {
-      await navigator.clipboard.writeText(
-        `https://secondbrain.app/share/${data.data.hash}`
-      );
+    if (shareHash) {
+      const fullLink = `${window.location.origin}/api/v1/brain/share/${shareHash}`;
+      await navigator.clipboard.writeText(fullLink);
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);
     }
   };
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -67,12 +66,12 @@ export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
           <div className="flex justify-between items-start gap-4">
             <div className="space-y-2">
               <h2 className="text-xl font-semibold tracking-tight">
-                Share Your Second Brain
+                Share Your Bookmark list
               </h2>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Share your entire collection of notes, documents, tweets and
-                videos with others. They&apos;ll be able to import your content
-                into their own Second Brain.
+                Share your entire collection of notes, documents, tweets, and
+                videos with others. They&apos;ll be able to see all your
+                bookmarks
               </p>
             </div>
             <button
@@ -83,39 +82,49 @@ export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
             </button>
           </div>
 
-          {data && data.allowed && (
-            <div className="flex gap-3">
-              <Button
-                variant="destructive"
-                className="flex-1 font-medium"
-                onClick={() => toggleSharing(false)}
-              >
-                Stop Sharing
-              </Button>
-              <Button
-                variant="secondary"
-                className="flex-1 font-medium"
-                onClick={handleCopyLink}
-                disabled={!data?.data?.hash}
-              >
-                <Copy className="w-4 h-4 mr-2" />
-                {isCopied ? "Copied!" : "Copy Link"}
-              </Button>
+          {isSharing && (
+            <div className="rounded-lg bg-muted/50 px-3 py-2 text-sm text-muted-foreground">
+              Some contents are being shared.
             </div>
           )}
 
-          {data && !data.allowed && (
-            <Button
-              // variant="primary"
-              className="w-full font-medium"
-              onClick={() => toggleSharing(true)}
-            >
-              Start Sharing
-            </Button>
+          {!allowed && !isLoading && (
+            <div className="rounded-lg bg-red-500 text-white px-3 py-2 text-sm">
+              Sharing is not allowed.
+            </div>
           )}
 
+          <div className="flex gap-3">
+            {data?.allowed ? (
+              <Button
+                variant="destructive"
+                className="flex-1 font-medium"
+                onClick={handleStopSharing}
+              >
+                Stop Sharing
+              </Button>
+            ) : (
+              <Button
+                className="flex-1 font-medium bg-green-400"
+                onClick={handleStopSharing}
+              >
+                Start Sharing
+              </Button>
+            )}
+
+            <Button
+              variant="secondary"
+              className="flex-1 font-medium"
+              onClick={handleCopyLink}
+              disabled={!allowed || isLoading || !shareHash}
+            >
+              <Copy className="w-4 h-4 mr-2" />
+              {isCopied ? "Copied!" : "Copy Link"}
+            </Button>
+          </div>
+
           <div className="text-center text-sm text-muted-foreground">
-            {itemCount} {itemCount === 1 ? "item" : "items"} will be shared
+            {itemCount} {itemCount === 1 ? "item" : "items"} will be shared.
           </div>
         </div>
       </DialogContent>

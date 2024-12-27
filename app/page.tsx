@@ -63,7 +63,7 @@ export default function Home() {
                 <NoteCardSkeleton />
               </div>
             ) : (
-              <div className="grid gap-3 grid-cols-3">
+              <div className=" flex flex-row gap-5 flex-wrap">
                 {filteredBookmarks.map((each) => (
                   <NoteCard
                     id={each.id}

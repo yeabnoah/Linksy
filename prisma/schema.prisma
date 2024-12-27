@@ -45,7 +45,7 @@ model Link {
   id Int @id @default(autoincrement())
   hash String
   userId String
-  allowed Boolean @default(false)
+  allowed Boolean 
   user User @relation(fields: [userId], references: [id])
 
   @@unique([userId])
