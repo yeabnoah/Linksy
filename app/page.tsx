@@ -47,7 +47,7 @@ export default function Home() {
     BUTTONS.map(({ icon, label, onClick, variant }) => (
       <Button
         key={label}
-        variant={variant}
+        // variant={variant}
         className="font-medium flex items-center justify-center text-center transition-all duration-200 ease-in-out hover:scale-105"
         onClick={() => {
           if (onClick === "setIsShareModalOpen") {
