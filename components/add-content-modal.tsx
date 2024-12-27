@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -26,8 +28,8 @@ import {
   TelescopeIcon,
   TwitterIcon,
   YoutubeIcon,
+  Loader2,
 } from "lucide-react";
-import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
 interface AddContentModalProps {
@@ -43,7 +45,7 @@ const contentTypes = [
   },
   {
     value: "youtube",
-    label: "Youtube",
+    label: "YouTube",
     icon: <YoutubeIcon className="w-4 h-4" />,
   },
   {
@@ -93,9 +95,9 @@ export function AddContentModal({ isOpen, onClose }: AddContentModalProps) {
     },
     onSuccess: () => {
       toast.dismiss();
-      // toast("Content added successfully!");
       toast.success("Content added successfully!");
       queryClient.invalidateQueries();
+      resetForm();
       onClose();
     },
     onError: (error) => {
@@ -113,101 +115,131 @@ export function AddContentModal({ isOpen, onClose }: AddContentModalProps) {
     mutation.mutate();
   };
 
+  const resetForm = () => {
+    setContentType("");
+    setTitle("");
+    setContent("");
+    setLink("");
+    setTagsInput("");
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md rounded-none">
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold tracking-tight">
+          <DialogTitle className="text-2xl font-bold tracking-tight">
             Add Content
           </DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div className="space-y-2.5">
-            <Label htmlFor="type" className="text-sm font-medium">
-              Content Type
-            </Label>
-            <Select value={contentType} onValueChange={setContentType}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select content type" />
-              </SelectTrigger>
-              <SelectContent>
-                {contentTypes.map((type) => (
-                  <SelectItem
-                    key={type.value}
-                    value={type.value}
-                    className="font-medium"
-                  >
-                    <div className="flex items-center gap-2">
-                      {type.icon}
-                      {type.label}
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={contentType}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.2 }}
+              className="space-y-6"
+            >
+              <div className="space-y-2">
+                <Label htmlFor="type" className="text-sm font-medium">
+                  Content Type
+                </Label>
+                <Select value={contentType} onValueChange={setContentType}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select content type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {contentTypes.map((type) => (
+                      <SelectItem
+                        key={type.value}
+                        value={type.value}
+                        className="font-medium"
+                      >
+                        <div className="flex items-center gap-2">
+                          {type.icon}
+                          {type.label}
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-          <div className="space-y-2.5">
-            <Label htmlFor="title" className="text-sm font-medium">
-              Title
-            </Label>
-            <Input
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter title"
-              className="w-full"
-              required
-            />
-          </div>
+              {contentType && (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="title" className="text-sm font-medium">
+                      Title
+                    </Label>
+                    <Input
+                      id="title"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder="Enter title"
+                      className="w-full"
+                      required
+                    />
+                  </div>
 
-          <div className="space-y-2.5">
-            <Label htmlFor="content" className="text-sm font-medium">
-              Content
-            </Label>
-            <Textarea
-              id="content"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="Enter content"
-              className="min-h-[100px] resize-none"
-              required
-            />
-          </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="content" className="text-sm font-medium">
+                      Content
+                    </Label>
+                    <Textarea
+                      id="content"
+                      value={content}
+                      onChange={(e) => setContent(e.target.value)}
+                      placeholder="Enter content"
+                      className="min-h-[100px] resize-none"
+                      required
+                    />
+                  </div>
 
-          <div className="space-y-2.5">
-            <Label htmlFor="link" className="text-sm font-medium">
-              Link
-            </Label>
-            <Input
-              id="link"
-              value={link}
-              onChange={(e) => setLink(e.target.value)}
-              placeholder="https://"
-              type="url"
-              className="w-full"
-            />
-          </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="link" className="text-sm font-medium">
+                      Link
+                    </Label>
+                    <Input
+                      id="link"
+                      value={link}
+                      onChange={(e) => setLink(e.target.value)}
+                      placeholder="https://"
+                      type="url"
+                      className="w-full"
+                    />
+                  </div>
 
-          <div className="space-y-2.5">
-            <Label htmlFor="tags" className="text-sm font-medium">
-              Tags
-            </Label>
-            <Input
-              id="tags"
-              value={tagsInput}
-              onChange={(e) => setTagsInput(e.target.value)}
-              placeholder="Enter tags separated by commas"
-              className="w-full"
-            />
-          </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="tags" className="text-sm font-medium">
+                      Tags
+                    </Label>
+                    <Input
+                      id="tags"
+                      value={tagsInput}
+                      onChange={(e) => setTagsInput(e.target.value)}
+                      placeholder="Enter tags separated by commas"
+                      className="w-full"
+                    />
+                  </div>
+                </>
+              )}
+            </motion.div>
+          </AnimatePresence>
 
           <Button
             type="submit"
             className="w-full bg-primary hover:bg-primary/90 transition-colors"
-            disabled={mutation.isPending}
+            disabled={mutation.isPending || !contentType}
           >
-            {mutation.isPending ? "Adding..." : "Add Content"}
+            {mutation.isPending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Adding...
+              </>
+            ) : (
+              "Add Content"
+            )}
           </Button>
         </form>
       </DialogContent>

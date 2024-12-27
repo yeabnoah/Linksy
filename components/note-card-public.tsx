@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useMutation } from "@tanstack/react-query";
@@ -8,11 +12,18 @@ import {
   Trash2,
   TwitterIcon,
   YoutubeIcon,
+  ExternalLinkIcon,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { InstagramEmbed, XEmbed, YouTubeEmbed } from "react-social-media-embed";
 import TelegramPost from "./telegramEmbed";
 import { queryClient } from "@/util/query-client";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface NoteCardProps {
   id: number;
@@ -23,6 +34,13 @@ interface NoteCardProps {
   link: string;
 }
 
+const typeIcons = {
+  twitter: TwitterIcon,
+  youtube: YoutubeIcon,
+  telegram: MessageSquareIcon,
+  instagram: InstagramIcon,
+};
+
 export function NoteCardTrash({
   id,
   title,
@@ -31,6 +49,8 @@ export function NoteCardTrash({
   type,
   description,
 }: NoteCardProps) {
+  const [isHovered, setIsHovered] = useState(false);
+
   const deleteNoteMutation = useMutation({
     mutationFn: async (id: number) => {
       const response = await axios.delete(`/api/v1/content/${id}`, {
@@ -51,75 +71,89 @@ export function NoteCardTrash({
     deleteNoteMutation.mutate(id);
   };
 
-  return (
-    <Card className="my-5 rounded-sm group overflow-hidden h-fit w-96 shadow-sm transition-transform duration-200 hover:shadow-md hover:-translate-y-1">
-      {type === "twitter" && (
-        <div className="flex flex-row items-center p-3 gap-3 border-b text-black border-b-black/10">
-          <TwitterIcon className="text-black w-5 h-5" />
-          <p>Twitter</p>
-        </div>
-      )}
-      {type === "youtube" && (
-        <div className="flex flex-row items-center p-3 gap-3 border-b text-black border-b-black/10">
-          <YoutubeIcon className="text-black w-5 h-5" />
-          <p>Youtube</p>
-        </div>
-      )}
-      {type === "telegram" && (
-        <div className="flex flex-row items-center p-3 gap-3 border-b text-black border-b-black/10">
-          <MessageSquareIcon className="text-black w-5 h-5" />
-          <p>Telegram</p>
-        </div>
-      )}
-      {type === "instagram" && (
-        <div className="flex flex-row items-center p-3 gap-3 border-b text-black border-b-black/10">
-          <InstagramIcon className="text-black w-5 h-5" />
-          <p>Instagram</p>
-        </div>
-      )}
+  const TypeIcon = typeIcons[type as keyof typeof typeIcons];
 
-      <CardHeader className="flex shadow-none items-center flex-row justify-between space-y-0 pb-2 border-b">
-        <div className="flex items-center gap-3">
-          <h2 className="text-lg font-semibold tracking-tight text-foreground">
-            {title}
-          </h2>
-        </div>
-      </CardHeader>
-      <CardContent className="p-5 space-y-4">
-        <div className="flex justify-center border rounded-md bg-background">
-          {type === "twitter" && (
-            <XEmbed url={link} className="w-full h-32 rounded-md" />
-          )}
-          {type === "youtube" && (
-            <YouTubeEmbed url={link} className="h-32 w-full rounded-md" />
-          )}
-          {type === "instagram" && (
-            <InstagramEmbed url={link} className="h-32 w-full rounded-md" />
-          )}
-          {type === "telegram" && <TelegramPost type="telegram" link={link} />}
-        </div>
-        <p className="text-sm leading-relaxed text-muted-foreground">
-          {description}
-        </p>
-        <a
-          href={link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-sm text-primary underline hover:opacity-80"
-        >
-          {link}
-        </a>
-        <div className="flex flex-wrap gap-2">
-          {tags.map((tag) => (
-            <span
-              key={tag}
-              className="inline-flex items-center text-xs font-medium text-primary bg-primary/10 px-2.5 py-0.5 rounded-md hover:bg-primary/20"
-            >
-              #{tag}
-            </span>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.3 }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+    >
+      <Card className="overflow-hidden h-fit w-full max-w-sm shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl">
+        <CardHeader className="flex items-center flex-row justify-between space-y-0 pb-2 bg-primary/5">
+          <div className="flex items-center gap-3">
+            {TypeIcon && <TypeIcon className="text-primary w-5 h-5" />}
+            <h2 className="text-lg font-semibold tracking-tight text-foreground">
+              {title}
+            </h2>
+          </div>
+        </CardHeader>
+        <CardContent className="p-5 space-y-4">
+          <motion.div
+            className="flex justify-center border rounded-md bg-background overflow-hidden"
+            animate={{ height: isHovered ? "12rem" : "8rem" }}
+            transition={{ duration: 0.3 }}
+          >
+            {type === "twitter" && (
+              <XEmbed url={link} className="w-full rounded-md" />
+            )}
+            {type === "youtube" && (
+              <YouTubeEmbed url={link} className="w-full rounded-md" />
+            )}
+            {type === "instagram" && (
+              <InstagramEmbed url={link} className="w-full rounded-md" />
+            )}
+            {type === "telegram" && (
+              <TelegramPost type="telegram" link={link} />
+            )}
+          </motion.div>
+          <AnimatePresence>
+            {isHovered && (
+              <motion.p
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.2 }}
+                className="text-sm leading-relaxed text-muted-foreground"
+              >
+                {description}
+              </motion.p>
+            )}
+          </AnimatePresence>
+          <div className="flex items-center justify-between">
+            <div className="flex flex-wrap gap-2">
+              {tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="inline-flex items-center text-xs font-medium text-primary bg-primary/10 px-2.5 py-0.5 rounded-full transition-colors duration-200 hover:bg-primary/20"
+                >
+                  #{tag}
+                </span>
+              ))}
+            </div>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <a
+                    href={link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:text-primary/80 transition-colors duration-200"
+                  >
+                    <ExternalLinkIcon className="w-5 h-5" />
+                  </a>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Open original link</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 }

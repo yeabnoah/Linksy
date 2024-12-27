@@ -1,95 +1,158 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Plus, Share2, Bookmark } from "lucide-react";
+import { useBookmarkStore } from "@/state/bookmarkStore";
 import { NoteCard } from "@/components/note-card";
 import { NoteCardSkeleton } from "@/components/note-card-skeleton";
 import { ShareModal } from "@/components/share-modal";
 import { AddContentModal } from "@/components/add-content-modal";
-import { Sidebar } from "@/components/sidebar";
 import { Button } from "@/components/ui/button";
-import { useBookmarkStore } from "@/state/bookmarkStore";
-import { useState, useEffect } from "react";
-import { Plus, Share2 } from "lucide-react";
+
+const BUTTONS = [
+  {
+    icon: <Share2 className="w-4 h-4 mr-2" />,
+    label: "Share Memory",
+    onClick: "setIsShareModalOpen",
+    variant: "outline",
+  },
+  {
+    icon: <Plus className="w-4 h-4 mr-2" />,
+    label: "Add Memory",
+    onClick: "setIsAddContentModalOpen",
+    variant: "default",
+  },
+];
+
+const FILTERS = [
+  { label: "All Types", value: "" },
+  { label: "Telegram", value: "telegram" },
+  { label: "Twitter", value: "twitter" },
+  { label: "Instagram", value: "instagram" },
+  { label: "Youtube", value: "youtube" },
+];
 
 export default function Home() {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isAddContentModalOpen, setIsAddContentModalOpen] = useState(false);
-  const { filteredBookmarks, currentFilter, refetchBookmarks } =
+  const { filteredBookmarks, refetchBookmarks, filterByType, currentFilter } =
     useBookmarkStore();
-
-  const pageTitle = currentFilter
-    ? currentFilter.charAt(0).toUpperCase() + currentFilter.slice(1)
-    : "All Bookmarks";
 
   useEffect(() => {
     refetchBookmarks();
   }, [refetchBookmarks]);
 
+  const renderButtons = () =>
+    BUTTONS.map(({ icon, label, onClick, variant }) => (
+      <Button
+        key={label}
+        variant={variant}
+        className="font-medium flex items-center justify-center text-center transition-all duration-200 ease-in-out hover:scale-105"
+        onClick={() => {
+          if (onClick === "setIsShareModalOpen") {
+            setIsShareModalOpen(true);
+          } else {
+            setIsAddContentModalOpen(true);
+          }
+        }}
+      >
+        {icon}
+        <span className="hidden sm:inline">{label}</span>
+      </Button>
+    ));
+
+  const renderFilters = () =>
+    FILTERS.map(({ label, value }) => (
+      <motion.li
+        key={value}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        <button
+          onClick={() => filterByType(value)}
+          className={`text-lg transition-all duration-200 ease-in-out ${
+            currentFilter === value
+              ? "font-bold text-primary"
+              : "text-muted-foreground hover:text-primary"
+          }`}
+        >
+          {label}
+        </button>
+      </motion.li>
+    ));
+
   return (
-    <div className="flex min-h-screen bg-white">
-      <Sidebar />
-      <div className="relative h-full w-full">
-        <main className="flex-1 md:ml-72">
-          <div className="max-w-7xl mx-auto px-6 py-8">
-            <div className="flex justify-between items-center mb-8">
-              <h1 className="text-xl font-md tracking-sidebar dark:text-white">
-                {pageTitle}
-              </h1>
-              <div className="flex items-center gap-3">
-                <Button
-                  variant="outline"
-                  className="font-medium flex items-center justify-center text-center text-primary hover:text-primary hover:bg-primary/10 border-primary/20"
-                  onClick={() => setIsShareModalOpen(true)}
-                >
-                  <Share2 className="w-4 h-4 md:mr-2" />
-                  <span className="hidden md:block">Share Memory</span>
-                </Button>
-                <Button
-                  className="font-medium flex justify-center items-center text-center bg-primary hover:bg-primary/90 transition-colors"
-                  onClick={() => setIsAddContentModalOpen(true)}
-                >
-                  <Plus className="w-4 h-4 md:mr-2" />
-                  <span className="hidden md:block">Add Memory</span>
-                </Button>
-              </div>
-            </div>
+    <div className="min-h-screen bg-background max-w-7xl mx-auto">
+      <main className="container mx-auto px-4 py-8">
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-8 space-y-4 sm:space-y-0">
+          <h1 className="text-3xl font-bold tracking-tight text-primary flex items-center">
+            <Bookmark className="w-8 h-8 mr-2" />
+            My Bookmarks
+          </h1>
+          <div className="flex items-center space-x-3">{renderButtons()}</div>
+        </div>
 
-            {filteredBookmarks.length === 0 ? (
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                <NoteCardSkeleton />
-                <NoteCardSkeleton />
-                <NoteCardSkeleton />
-                <NoteCardSkeleton />
-                <NoteCardSkeleton />
-                <NoteCardSkeleton />
-              </div>
-            ) : (
-              <div className=" flex flex-row gap-5 flex-wrap">
-                {filteredBookmarks.map((each) => (
+        <nav className="mb-8">
+          <ul className="flex flex-wrap gap-6 justify-center sm:justify-start">
+            {renderFilters()}
+          </ul>
+        </nav>
+
+        <AnimatePresence mode="wait">
+          {filteredBookmarks.length === 0 ? (
+            <motion.div
+              key="skeleton"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+            >
+              {[...Array(6)].map((_, index) => (
+                <NoteCardSkeleton key={index} />
+              ))}
+            </motion.div>
+          ) : (
+            <motion.div
+              key="bookmarks"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+            >
+              {filteredBookmarks.map((bookmark) => (
+                <motion.div
+                  key={bookmark.id}
+                  layout
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3 }}
+                >
                   <NoteCard
-                    id={each.id}
-                    description={(each?.description as string) || ""}
-                    key={each.id}
-                    title={each.title}
-                    link={each.link}
-                    tags={each.tags}
-                    type={each.type}
+                    id={bookmark.id}
+                    description={(bookmark?.description as string) || ""}
+                    title={bookmark.title}
+                    link={bookmark.link}
+                    tags={bookmark.tags}
+                    type={bookmark.type}
                   />
-                ))}
-              </div>
-            )}
-          </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </main>
 
-          <ShareModal
-            isOpen={isShareModalOpen}
-            onClose={() => setIsShareModalOpen(false)}
-            itemCount={3}
-          />
-          <AddContentModal
-            isOpen={isAddContentModalOpen}
-            onClose={() => setIsAddContentModalOpen(false)}
-          />
-        </main>
-      </div>
+      <ShareModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        itemCount={filteredBookmarks.length}
+      />
+      <AddContentModal
+        isOpen={isAddContentModalOpen}
+        onClose={() => setIsAddContentModalOpen(false)}
+      />
     </div>
   );
 }

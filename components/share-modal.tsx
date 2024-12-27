@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { X, Copy } from "lucide-react";
+import { X, Copy, Share2, Lock } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import dataComing from "@/interface/dataIncoming";
@@ -97,67 +98,84 @@ export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md p-0 gap-0 animate-in">
-        <div className="p-6 space-y-4">
+      <DialogContent className="sm:max-w-xl p-0 overflow-hidden">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.3 }}
+          className="p-6 space-y-6"
+        >
           <div className="flex justify-between items-start gap-4">
             <div className="space-y-2">
-              <h2 className="text-xl font-semibold tracking-tight">
+              <h2 className="text-2xl font-bold tracking-tight">
                 Share Your Bookmark List
               </h2>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 Share your entire collection of notes, documents, tweets, and
-                videos with others. They&apos;ll be able to see all your
-                bookmarks.
+                videos with others. They'll be able to see all your bookmarks.
               </p>
             </div>
           </div>
 
-          {allowed && shareHash && (
-            <div className="rounded-lg bg-muted/50 px-3 py-2 text-sm text-muted-foreground">
-              {link}
-            </div>
-          )}
-
-          {!allowed && !isLoading && (
-            <div className="rounded-lg bg-red-500 text-white px-3 py-2 text-sm">
-              Sharing is not allowed.
-            </div>
-          )}
-
-          <div className="flex gap-3">
-            {allowed ? (
-              <div className="flex items-center w-full gap-5 justify-between">
-                <Button
-                  variant="destructive"
-                  className="flex-1 font-medium"
-                  onClick={handleStopSharing}
-                >
-                  Stop Sharing
-                </Button>
-                <Button
-                  variant="secondary"
-                  className="flex-1 font-medium"
-                  onClick={handleCopyLink}
-                  disabled={!shareHash}
-                >
-                  <Copy className="w-4 h-4 mr-2" />
-                  {isCopied ? "Copied!" : "Copy Link"}
-                </Button>
-              </div>
-            ) : (
-              <Button
-                className="flex-1 font-medium bg-green-400 hover:bg-green-500"
-                onClick={handleStartSharing}
+          <AnimatePresence mode="wait">
+            {allowed && shareHash ? (
+              <motion.div
+                key="share-link"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+                className="space-y-4"
               >
-                Start Sharing
-              </Button>
+                <div className="flex items-center space-x-2 rounded-lg bg-muted p-3 text-sm">
+                  <Share2 className="h-4 w-4 text-muted-foreground" />
+                  <span className="flex-1 truncate">{link}</span>
+                </div>
+                <div className="flex gap-3">
+                  <Button
+                    variant="destructive"
+                    className="flex-1 font-medium"
+                    onClick={handleStopSharing}
+                  >
+                    <Lock className="w-4 h-4 mr-2" />
+                    Stop Sharing
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    className="flex-1 font-medium"
+                    onClick={handleCopyLink}
+                  >
+                    <Copy className="w-4 h-4 mr-2" />
+                    {isCopied ? "Copied!" : "Copy Link"}
+                  </Button>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="start-sharing"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                {!isLoading && (
+                  <Button
+                    className="w-full font-medium bg-primary hover:bg-primary/90"
+                    onClick={handleStartSharing}
+                  >
+                    <Share2 className="w-4 h-4 mr-2" />
+                    Start Sharing
+                  </Button>
+                )}
+              </motion.div>
             )}
-          </div>
+          </AnimatePresence>
 
           <div className="text-center text-sm text-muted-foreground">
             {itemCount} {itemCount === 1 ? "item" : "items"} will be shared.
           </div>
-        </div>
+        </motion.div>
       </DialogContent>
     </Dialog>
   );

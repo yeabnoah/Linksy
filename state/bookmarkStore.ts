@@ -1,54 +1,54 @@
+import { queryClient } from "@/util/query-client";
 import { ContentInterface } from "@/validation/contentSchema";
-import { create } from "zustand";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { useState } from "react";
 
-interface BookmarkStore {
-  bookmarks: ContentInterface[];
-  filteredBookmarks: ContentInterface[];
-  currentFilter: string; // Tracks the current filter
-  fetchBookmarks: () => Promise<void>;
-  filterByType: (type: string) => void;
-  refetchBookmarks: () => Promise<void>;
-  setCurrentFilter: (filter: string) => void; // Sets the current filter
-}
+const fetchBookmarksData = async (): Promise<ContentInterface[]> => {
+  const response = await axios.get<{ data: ContentInterface[] }>(
+    "/api/v1/content",
+    { withCredentials: true }
+  );
+  return response.data.data;
+};
 
-export const useBookmarkStore = create<BookmarkStore>((set) => ({
-  bookmarks: [],
-  filteredBookmarks: [],
-  currentFilter: "", // Initially no filter applied (all items)
+export const useBookmarkStore = () => {
+  const [currentFilter, setCurrentFilter] = useState<string>("");
 
-  fetchBookmarks: async () => {
-    try {
-      const response = await axios.get<{ data: ContentInterface[] }>(
-        "/api/v1/content",
-        { withCredentials: true }
-      );
-      const bookmarks = response.data.data;
-      set({ bookmarks, filteredBookmarks: bookmarks });
-    } catch (error) {
-      console.error("Failed to fetch bookmarks:", error);
-    }
-  },
+  const {
+    data: bookmarks = [],
+    refetch,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["bookmarks"],
+    queryFn: fetchBookmarksData,
+  });
 
-  refetchBookmarks: async () => {
-    try {
-      const response = await axios.get<{ data: ContentInterface[] }>(
-        "/api/v1/content",
-        { withCredentials: true }
-      );
-      const bookmarks = response.data.data;
-      set({ bookmarks, filteredBookmarks: bookmarks });
-    } catch (error) {
-      console.error("Failed to refetch bookmarks:", error);
-    }
-  },
+  const filteredBookmarks = currentFilter
+    ? bookmarks.filter((bookmark) => bookmark.type === currentFilter)
+    : bookmarks;
 
-  filterByType: (type) =>
-    set((state) => ({
-      filteredBookmarks: type
-        ? state.bookmarks.filter((bookmark) => bookmark.type === type)
-        : state.bookmarks,
-    })),
+  const { mutate: refetchBookmarks } = useMutation({
+    mutationFn: fetchBookmarksData,
+    onSuccess: () => {
+      queryClient.invalidateQueries();
+    },
+  });
 
-  setCurrentFilter: (filter) => set({ currentFilter: filter }), // Set current filter
-}));
+  const filterByType = (type: string) => {
+    setCurrentFilter(type);
+  };
+
+  return {
+    bookmarks,
+    filteredBookmarks,
+    currentFilter,
+    isLoading,
+    isError,
+    fetchBookmarks: refetch,
+    refetchBookmarks,
+    filterByType,
+    setCurrentFilter,
+  };
+};

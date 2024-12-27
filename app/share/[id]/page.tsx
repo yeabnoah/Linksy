@@ -2,7 +2,7 @@
 
 import { NoteCardTrash } from "@/components/note-card-public";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 interface Post {
   id: number;
@@ -20,36 +20,48 @@ interface ApiResponse<T> {
   data: T;
 }
 
+const fetchPosts = async (id: string) => {
+  const response = await axios.get<ApiResponse<Post[]>>(
+    `/api/v1/brain/share/${id}`
+  );
+  return response.data.data;
+};
+
 const ShareComponent = ({ params }: { params: { id: string } }) => {
-  const id = params.id;
-  const [dataFetched, setDataFetched] = useState<Post[]>();
+  const { id } = params;
 
-  const fetchDatas = async () => {
-    try {
-      const response = await axios.get<ApiResponse<Post[]>>(
-        `/api/v1/brain/share/${id}`
-      );
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["sharePosts", id],
+    queryFn: () => fetchPosts(id),
+    enabled: !!id,
+  });
 
-      setDataFetched(response.data.data);
-      console.log(response.data.data); // now typescript knows that data is an array of Post
-      console.log("clicked");
-    } catch (error) {
-      console.error("Error fetching data", error);
-    }
-  };
+  if (isLoading) {
+    return (
+      <div className=" bg-white min-h-screen flex items-center w-full justify-center">
+        Loading...
+      </div>
+    );
+  }
 
-  useEffect(() => {
-    fetchDatas();
-  }, []);
+  if (error instanceof Error) {
+    return (
+      <div className=" bg-white min-h-screen flex items-center w-full justify-center">
+        <h1 className=" text-2xl font-bold">
+          permission Disabled or wrong access link
+        </h1>
+      </div>
+    );
+  }
 
   return (
-    <div className=" mx-auto w-full  min-h-screen bg-white">
-      <h1 className=" text-center py-5 text-black  text-4xl font-medium">
+    <div className=" mx-auto w-full min-h-screen bg-white">
+      <h1 className=" text-center py-5 text-black text-4xl font-medium">
         Bookmark
       </h1>
       <hr className=" hidden md:block" />
       <div className=" flex w-[90%] md:max-w-6xl mx-auto justify-center flex-wrap gap-5 mt-5">
-        {dataFetched?.map((each) => {
+        {data?.map((each) => {
           return (
             <NoteCardTrash
               type={each.type}
