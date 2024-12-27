@@ -19,22 +19,8 @@ export const GET = async (
       );
     }
 
-    const session = await getUserSession();
-
-    if (!session) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "You are not authorized.",
-          error: "authentication",
-          data: null,
-        },
-        { status: 401 }
-      );
-    }
-
     const link = await prisma.link.findFirst({
-      where: { hash: hash_param, userId: session.user.id },
+      where: { hash: hash_param },
     });
 
     if (!link || !link.allowed) {

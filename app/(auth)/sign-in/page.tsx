@@ -31,7 +31,7 @@ export default function SignIn() {
   }
 
   return (
-    <div className=" flex justify-center items-center min-h-screen w-full dark:bg-black">
+    <div className=" flex justify-center items-center min-h-screen w-full  bg-white ">
       <Card className="max-w-md">
         <CardHeader>
           <CardTitle className="text-lg md:text-xl">Sign In</CardTitle>
@@ -138,7 +138,7 @@ export default function SignIn() {
           <div className="flex justify-center w-full border-t py-4">
             <p className="text-center text-xs text-neutral-500">
               Already have an account{" "}
-              <span className="text-orange-400">
+              <span className="text-black font-bold">
                 <Link href="/sign-up">SignUp</Link>
               </span>
             </p>

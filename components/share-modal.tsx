@@ -4,8 +4,9 @@ import { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { X, Copy } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import toast from "react-hot-toast";
+import dataComing from "@/interface/dataIncoming";
 
 interface ShareModalProps {
   isOpen: boolean;
@@ -13,47 +14,82 @@ interface ShareModalProps {
   itemCount: number;
 }
 
-interface dataComing {
-  data: {
-    id: number;
-    hash: string;
-    userId: string;
-  };
-  allowed: boolean;
-}
-
 export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
-  const [isSharing, setIsSharing] = useState(true);
   const [isCopied, setIsCopied] = useState(false);
   const [shareHash, setShareHash] = useState<string | null>(null);
-  const [allowed] = useState<boolean>(true);
-
-  const { data, isLoading, isSuccess } = useQuery({
-    queryKey: ["hash"],
-    queryFn: async () => {
-      const response = await axios.get("/api/v1/brain/share", {
-        withCredentials: true,
-      });
-      console.log("------- ", response.data);
-      return response.data as dataComing;
-    },
-    enabled: isOpen,
-  });
+  const [allowed, setAllowed] = useState<boolean>(false);
+  const [link, setLink] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (isSuccess && data?.allowed && data?.data.hash) {
-      setShareHash(data.data.hash);
-    }
-  }, [isSuccess, data]);
+    const fetchShareData = async () => {
+      if (isOpen) {
+        setIsLoading(true);
+        try {
+          const response = await axios.get("/api/v1/brain/share", {
+            withCredentials: true,
+          });
+          const data = response.data as dataComing;
+          if (data.data.hash) {
+            setShareHash(data.data.hash);
+            setAllowed(data.data.allowed);
+            setLink(
+              `${window.location.origin}/api/v1/brain/share/${data.data.hash}`
+            );
+          }
+        } catch (error) {
+          toast.error("Failed to fetch sharing data.");
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
 
-  const handleStopSharing = () => {
-    setIsSharing(false);
+    fetchShareData();
+  }, [isOpen]);
+
+  const handleStopSharing = async () => {
+    try {
+      await axios.post(
+        "/api/v1/brain/share",
+        { shareApproved: false },
+        { withCredentials: true }
+      );
+      toast.success("Sharing disabled successfully");
+      setAllowed(false);
+      setShareHash(null);
+      setLink("");
+    } catch (error) {
+      toast.error("An error occurred while disabling sharing.");
+    }
+  };
+
+  const handleStartSharing = async () => {
+    try {
+      const response = await axios.post(
+        "/api/v1/brain/share",
+        { shareApproved: true },
+        { withCredentials: true }
+      );
+      const data = response.data as dataComing;
+      if (data.data.hash) {
+        toast.success("Sharing enabled successfully");
+        setShareHash(data.data.hash);
+        setLink(
+          `${window.location.origin}/api/v1/brain/share/${data.data.hash}`
+        );
+        setAllowed(true);
+      } else {
+        toast.error("Sharing enabled, but no hash received.");
+      }
+    } catch (error) {
+      toast.error("An error occurred while enabling sharing.");
+    }
   };
 
   const handleCopyLink = async () => {
     if (shareHash) {
-      const fullLink = `${window.location.origin}/api/v1/brain/share/${shareHash}`;
-      await navigator.clipboard.writeText(fullLink);
+      await navigator.clipboard.writeText(link);
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);
     }
@@ -66,25 +102,19 @@ export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
           <div className="flex justify-between items-start gap-4">
             <div className="space-y-2">
               <h2 className="text-xl font-semibold tracking-tight">
-                Share Your Bookmark list
+                Share Your Bookmark List
               </h2>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 Share your entire collection of notes, documents, tweets, and
                 videos with others. They&apos;ll be able to see all your
-                bookmarks
+                bookmarks.
               </p>
             </div>
-            <button
-              onClick={onClose}
-              className="text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <X className="h-4 w-4" />
-            </button>
           </div>
 
-          {isSharing && (
+          {allowed && shareHash && (
             <div className="rounded-lg bg-muted/50 px-3 py-2 text-sm text-muted-foreground">
-              Some contents are being shared.
+              {link}
             </div>
           )}
 
@@ -95,32 +125,33 @@ export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
           )}
 
           <div className="flex gap-3">
-            {data?.allowed ? (
-              <Button
-                variant="destructive"
-                className="flex-1 font-medium"
-                onClick={handleStopSharing}
-              >
-                Stop Sharing
-              </Button>
+            {allowed ? (
+              <div className="flex items-center w-full gap-5 justify-between">
+                <Button
+                  variant="destructive"
+                  className="flex-1 font-medium"
+                  onClick={handleStopSharing}
+                >
+                  Stop Sharing
+                </Button>
+                <Button
+                  variant="secondary"
+                  className="flex-1 font-medium"
+                  onClick={handleCopyLink}
+                  disabled={!shareHash}
+                >
+                  <Copy className="w-4 h-4 mr-2" />
+                  {isCopied ? "Copied!" : "Copy Link"}
+                </Button>
+              </div>
             ) : (
               <Button
-                className="flex-1 font-medium bg-green-400"
-                onClick={handleStopSharing}
+                className="flex-1 font-medium bg-green-400 hover:bg-green-500"
+                onClick={handleStartSharing}
               >
                 Start Sharing
               </Button>
             )}
-
-            <Button
-              variant="secondary"
-              className="flex-1 font-medium"
-              onClick={handleCopyLink}
-              disabled={!allowed || isLoading || !shareHash}
-            >
-              <Copy className="w-4 h-4 mr-2" />
-              {isCopied ? "Copied!" : "Copy Link"}
-            </Button>
           </div>
 
           <div className="text-center text-sm text-muted-foreground">

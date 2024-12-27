@@ -25,7 +25,7 @@ export default function Home() {
   }, [refetchBookmarks]);
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-white">
       <Sidebar />
       <div className="relative h-full w-full">
         <main className="flex-1 md:ml-72">

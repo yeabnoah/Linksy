@@ -50,8 +50,8 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className=" flex justify-center items-center min-h-screen flex-row">
-      <Card className="z-50 rounded-md rounded-t-none max-w-md">
+    <div className=" flex justify-center items-center bg-white min-h-screen flex-row">
+      <Card className="z-50 rounded-md rounded-t-none w-[90%] md:max-w-md">
         <CardHeader>
           <CardTitle className="text-lg md:text-xl">Sign Up</CardTitle>
           <CardDescription className="text-xs md:text-sm">
@@ -109,17 +109,18 @@ export default function SignUpPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   autoComplete="new-password"
                   placeholder="Password"
+                  className="  rounded-r-none border-r-0"
                 />
                 <Button
-                  className=" rounded-l-none bg-transparent  border hover:bg-transparent "
+                  className=" rounded-l-none  bg-transparent  border hover:bg-transparent "
                   onClick={() => {
                     setShowPassword(!showPassword);
                   }}
                 >
                   {showPassword ? (
-                    <EyeClosedIcon className=" text-white" />
+                    <EyeClosedIcon className=" text-black" />
                   ) : (
-                    <EyeIcon className=" text-white" />
+                    <EyeIcon className=" text-black" />
                   )}
                 </Button>
               </div>
@@ -208,7 +209,7 @@ export default function SignUpPage() {
           <div className="flex justify-center w-full border-t py-4">
             <p className="text-center text-xs text-neutral-500">
               Already have an account{" "}
-              <span className="text-orange-400">
+              <span className=" font-bold text-black">
                 <Link href="/sign-in">SignIn</Link>
               </span>
             </p>
