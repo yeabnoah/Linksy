@@ -28,7 +28,7 @@ export function AddFolderModal({ isOpen, onClose }: AddContentModalProps) {
   const mutation = useMutation({
     mutationFn: async () => {
       const response = await axios.post(
-        "/api/v1/content",
+        "/api/v1/folder",
         {
           name: name,
         },
@@ -39,11 +39,11 @@ export function AddFolderModal({ isOpen, onClose }: AddContentModalProps) {
       return response.data;
     },
     onMutate: () => {
-      toast.loading("Adding content...");
+      toast.loading("Creating Folder...");
     },
     onSuccess: () => {
       toast.dismiss();
-      toast.success("Content added successfully!");
+      toast.success("Folder Created successfully!");
       queryClient.invalidateQueries();
       resetForm();
       onClose();
@@ -53,7 +53,7 @@ export function AddFolderModal({ isOpen, onClose }: AddContentModalProps) {
       toast.error(
         error instanceof Error
           ? error.message
-          : "An error occurred while adding content."
+          : "An error occurred while creating folder."
       );
     },
   });
@@ -64,7 +64,7 @@ export function AddFolderModal({ isOpen, onClose }: AddContentModalProps) {
   };
 
   const resetForm = () => {
-    name("");
+    setName("");
   };
 
   return (
@@ -89,7 +89,11 @@ export function AddFolderModal({ isOpen, onClose }: AddContentModalProps) {
                   Folder Name
                 </Label>
 
-                <Input />
+                <Input
+                  onChange={(e) => {
+                    setName(e.target.value);
+                  }}
+                />
               </div>
             </motion.div>
           </AnimatePresence>

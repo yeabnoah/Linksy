@@ -24,6 +24,9 @@ export const GET = async () => {
       where: {
         userId: session.user.id,
       },
+      include: {
+        content: true,
+      },
     });
 
     return NextResponse.json(

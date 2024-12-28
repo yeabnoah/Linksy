@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export function NoteCardSkeleton() {
   return (
-    <Card className="animate-pulse">
+    <Card className="animate-pulse flex-1">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <div className="flex items-center gap-3">
           <Skeleton className="h-6 w-6 rounded-full" />

@@ -6,10 +6,16 @@ import { NoteCard } from "@/components/note-card";
 import { ProfileDropdown } from "@/components/profile-dropdown";
 import { ShareModal } from "@/components/share-modal";
 import { Button } from "@/components/ui/button";
+import folderInterface from "@/interface/folder_interface";
 import { authClient } from "@/lib/auth-client";
 import { useBookmarkStore } from "@/state/bookmarkStore";
+import useFoldersStore from "@/state/folderContent";
+import useSingleFoldersStore from "@/state/singleFolderStore";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import { AnimatePresence, motion } from "framer-motion";
-import { Bookmark, Plus, Share2, Folder } from "lucide-react";
+import { Bookmark, FolderIcon, Plus, Share2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 type Test =
@@ -48,25 +54,45 @@ const FILTERS = [
   { label: "Website", value: "website" },
 ];
 
-const FOLDERS = [
-  { name: "Work", color: "bg-blue-500" },
-  { name: "Personal", color: "bg-green-500" },
-  { name: "Study", color: "bg-yellow-500" },
-  { name: "Projects", color: "bg-purple-500" },
-];
-
 export default function Home() {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isAddContentModalOpen, setIsAddContentModalOpen] = useState(false);
   const [isAddFolderModalOpen, setIsAddFolderModalOpen] = useState(false);
+  const { setFolders } = useFoldersStore();
+  const router = useRouter();
+
   const { filteredBookmarks, refetchBookmarks, filterByType, currentFilter } =
     useBookmarkStore();
+  const { setSingleFolder } = useSingleFoldersStore();
+
+  const {
+    data: folder = [],
+    isLoading: isFetchingFolders,
+    isError: isFolderFetchError,
+  } = useQuery({
+    queryKey: ["folders"],
+    queryFn: async () => {
+      const response = (await axios.get("/api/v1/folder", {
+        withCredentials: true,
+      })) as { data: { data: folderInterface[] } };
+
+      setFolders(response.data.data);
+      return response.data.data;
+    },
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const session = authClient.useSession();
 
   useEffect(() => {
     refetchBookmarks();
   }, [refetchBookmarks]);
 
-  const session = authClient.useSession();
+  const user = {
+    name: session.data?.user ? (session.data?.user.name as string) : "",
+    email: session.data?.user ? (session.data?.user.email as string) : "",
+    image: session.data?.user ? (session.data?.user.image as string) : "",
+  };
 
   const renderButtons = () =>
     BUTTONS.map(({ icon, label, onClick, variant }) => (
@@ -108,30 +134,28 @@ export default function Home() {
     ));
 
   const renderFolders = () =>
-    FOLDERS.map(({ name }) => (
+    folder.map((each) => (
       <motion.div
-        key={name}
+        key={each.id}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="flex flex-col  items-start text-left cursor-pointer"
+        className="flex flex-col items-start text-left cursor-pointer"
       >
-        <div
-          className={`w-64 h-40 bg-white border-primary/15 border-[0.5px] rounded-lg flex items-center text-start justify-center mb-2`}
+        <button
+          onClick={() => {
+            router.push(`/folder/${each.id}`);
+            setSingleFolder(each);
+          }}
+          className="w-64 h-40 bg-white border-primary/15 shadow-sm border-[0.5px] rounded-lg flex items-center justify-center mb-2"
         >
-          <Folder
-            className="w-20 h-20 text-primary/5 "
+          <FolderIcon
+            className=" h-20 w-20 text-primary/30"
             fill="rgb(9 9 11 / 0.7)"
           />
-        </div>
-        <span className="text-sm font-medium text-right mx-2">{name}</span>
+        </button>
+        <span className="text-base font-medium mx-2">{each.name}</span>
       </motion.div>
     ));
-
-  const user = {
-    name: session.data?.user ? (session.data?.user.name as string) : "",
-    email: session.data?.user ? (session.data?.user.email as string) : "",
-    image: session.data?.user ? (session.data?.user.image as string) : "",
-  };
 
   return (
     <div className="min-h-screen bg-background max-w-7xl mx-auto">
@@ -150,7 +174,6 @@ export default function Home() {
         <div className="mb-12">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-semibold text-primary">Folders</h2>
-
             <Button
               className="rounded-sm"
               onClick={() => {
@@ -161,9 +184,15 @@ export default function Home() {
               Create Folder
             </Button>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {renderFolders()}
-          </div>
+          {isFetchingFolders ? (
+            <p>Loading folders...</p>
+          ) : isFolderFetchError ? (
+            <p>Error fetching folders</p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {renderFolders()}
+            </div>
+          )}
         </div>
 
         <nav className="mb-8 overflow-x-auto">
@@ -232,7 +261,6 @@ export default function Home() {
         isOpen={isAddContentModalOpen}
         onClose={() => setIsAddContentModalOpen(false)}
       />
-
       <AddFolderModal
         isOpen={isAddFolderModalOpen}
         onClose={() => setIsAddFolderModalOpen(false)}
