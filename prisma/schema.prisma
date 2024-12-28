@@ -37,6 +37,8 @@ model Content {
   description String?
   type type
   tags String[]
+  folderId Int
+  folder Folder @relation(fields: [folderId], references: [id])
   userId String
   user User @relation(fields: [userId], references: [id])
 }
@@ -51,6 +53,28 @@ model Link {
   @@unique([userId])
 }
 
+
+model FolderLink {
+  id Int @id @default(autoincrement())
+  hash String
+  folderId Int
+  allowed Boolean 
+  folder Folder @relation(fields: [folderId], references: [id])
+
+  @@unique([folderId])
+}
+
+
+
+model Folder {
+  id Int @id @default(autoincrement())
+  name String
+  userId String
+  user User @relation(fields: [userId], references: [id])
+  content Content[]
+  folderLink FolderLink?
+}
+
 model User {
   id            String    @id
   name          String
@@ -62,6 +86,7 @@ model User {
   sessions      Session[]
   accounts      Account[]
   content       Content[]
+  folders       Folder[]
   link Link? 
   
 

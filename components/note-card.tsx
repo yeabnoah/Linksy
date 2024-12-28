@@ -1,29 +1,30 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
-import {
-  InstagramIcon,
-  MessageSquareIcon,
-  Trash2,
-  TwitterIcon,
-  YoutubeIcon,
-  ExternalLinkIcon,
-} from "lucide-react";
-import toast from "react-hot-toast";
-import { InstagramEmbed, XEmbed, YouTubeEmbed } from "react-social-media-embed";
-import TelegramPost from "./telegramEmbed";
-import { queryClient } from "@/util/query-client";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { queryClient } from "@/util/query-client";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  ExternalLinkIcon,
+  InstagramIcon,
+  MessageSquareIcon,
+  Trash2,
+  TwitterIcon,
+  YoutubeIcon,
+} from "lucide-react";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { InstagramEmbed, XEmbed, YouTubeEmbed } from "react-social-media-embed";
+import RedditEmbed from "./redditEmbed";
+import TelegramPost from "./telegramEmbed";
 
 interface NoteCardProps {
   id: number;
@@ -125,6 +126,9 @@ export function NoteCard({
             )}
             {type === "telegram" && (
               <TelegramPost type="telegram" link={link} />
+            )}
+            {type === "reddit" && (
+              <RedditEmbed postUrl="https://www.reddit.com/r/tailwindcss/comments/1hnnzxa/i_built_a_free_noads_wordle_clone_with_almost/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button" />
             )}
           </motion.div>
           <AnimatePresence>

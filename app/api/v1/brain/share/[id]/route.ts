@@ -1,5 +1,4 @@
 import prisma from "@/lib/prisma";
-import getUserSession from "@/util/getUserData";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (

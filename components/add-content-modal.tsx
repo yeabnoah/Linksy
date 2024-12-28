@@ -29,6 +29,7 @@ import {
   TwitterIcon,
   YoutubeIcon,
   Loader2,
+  PodcastIcon,
 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -62,6 +63,11 @@ const contentTypes = [
     value: "article",
     label: "Article",
     icon: <DockIcon className="w-4 h-4" />,
+  },
+  {
+    value: "reddit",
+    label: "Reddit",
+    icon: <PodcastIcon className="w-4 h-4" />,
   },
 ];
 

@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { X, Copy, Share2, Lock } from "lucide-react";
-import axios from "axios";
-import toast from "react-hot-toast";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import dataComing from "@/interface/dataIncoming";
+import axios from "axios";
+import { AnimatePresence, motion } from "framer-motion";
+import { Copy, Lock, Share2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 interface ShareModalProps {
   isOpen: boolean;
@@ -34,12 +34,10 @@ export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
           if (data.data.hash) {
             setShareHash(data.data.hash);
             setAllowed(data.data.allowed);
-            setLink(
-              `${window.location.origin}/api/v1/brain/share/${data.data.hash}`
-            );
+            setLink(`${window.location.origin}/share/${data.data.hash}`);
           }
         } catch (error) {
-          toast.error("Failed to fetch sharing data.");
+          toast.error(`Failed to fetch sharing data. : ${error}`);
         } finally {
           setIsLoading(false);
         }
@@ -61,7 +59,7 @@ export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
       setShareHash(null);
       setLink("");
     } catch (error) {
-      toast.error("An error occurred while disabling sharing.");
+      toast.error(`An error occurred while disabling sharing. : ${error}`);
     }
   };
 
@@ -76,15 +74,13 @@ export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
       if (data.data.hash) {
         toast.success("Sharing enabled successfully");
         setShareHash(data.data.hash);
-        setLink(
-          `${window.location.origin}/api/v1/brain/share/${data.data.hash}`
-        );
+        setLink(`${window.location.origin}/share/${data.data.hash}`);
         setAllowed(true);
       } else {
         toast.error("Sharing enabled, but no hash received.");
       }
     } catch (error) {
-      toast.error("An error occurred while enabling sharing.");
+      toast.error(`An error occurred while enabling sharing.: ${error}`);
     }
   };
 
@@ -113,7 +109,8 @@ export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
               </h2>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 Share your entire collection of notes, documents, tweets, and
-                videos with others. They'll be able to see all your bookmarks.
+                videos with others. They&apos;ll be able to see all your
+                bookmarks.
               </p>
             </div>
           </div>

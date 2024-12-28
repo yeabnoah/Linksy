@@ -54,7 +54,6 @@ export const POST = async (req: NextRequest) => {
       );
     }
 
-    // console.log("test");
     const createdContent = await prisma.content.create({
       data: {
         title: body.title,
@@ -63,6 +62,7 @@ export const POST = async (req: NextRequest) => {
         type: body.type,
         tags: body.tags,
         userId: session?.user?.id,
+        folderId: body.folderId,
       },
     });
 
