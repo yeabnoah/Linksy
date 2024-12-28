@@ -1,24 +1,27 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios"; // Ensure axios is imported
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { NoteCard } from "@/components/note-card";
 import { AddContentModal } from "@/components/add-content-modal";
 import { AddFolderModal } from "@/components/add-folder";
-import { motion, AnimatePresence } from "framer-motion";
-import folderInterface from "@/interface/folder_interface";
-import useSingleFoldersStore from "@/state/singleFolderStore";
+import { NoteCard } from "@/components/note-card";
 import { ProfileDropdown } from "@/components/profile-dropdown";
+import folderInterface from "@/interface/folder_interface";
 import { authClient } from "@/lib/auth-client";
-import { Bookmark } from "lucide-react";
+import useSingleFoldersStore from "@/state/singleFolderStore";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { motion } from "framer-motion";
+import { Bookmark, Loader, MoveLeftIcon } from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { useRouter } from "next/navigation";
 
 export default function Folder({ params }: { params: { id: string } }) {
   const id = params.id;
   const [isAddContentModalOpen, setIsAddContentModalOpen] = useState(false);
   const { singleFolder, setSingleFolder } = useSingleFoldersStore();
   const session = authClient.useSession();
+  const router = useRouter();
 
   const user = {
     name: session.data?.user ? (session.data?.user.name as string) : "",
@@ -43,11 +46,15 @@ export default function Folder({ params }: { params: { id: string } }) {
 
   const renderContent = () => {
     if (isLoading) {
-      return <div>Loading...</div>;
+      return <Loader />;
     }
 
     if (isError || !singleFolder?.content) {
-      return <div>Error loading data or empty folder</div>;
+      return (
+        <Card className="p-4">
+          <p>Error loading data or empty folder</p>
+        </Card>
+      );
     }
 
     if (singleFolder.content.length === 0) {
@@ -69,7 +76,7 @@ export default function Folder({ params }: { params: { id: string } }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="bookmarks-list"
+        className="bookmarks-list grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
       >
         {singleFolder.content.map((bookmark) => (
           <NoteCard
@@ -87,7 +94,7 @@ export default function Folder({ params }: { params: { id: string } }) {
   };
 
   return (
-    <div className=" max-w-7xl mx-auto mt-5">
+    <div className="max-w-7xl mx-auto mt-5">
       <div className="flex flex-col space-y-4 sm:flex-row sm:justify-between sm:items-center mb-8">
         <h1 className="text-3xl font-bold tracking-tight text-primary flex items-center">
           <Bookmark className="w-8 h-8 mr-2" />
@@ -99,16 +106,36 @@ export default function Folder({ params }: { params: { id: string } }) {
         </div>
       </div>
 
-      <h1>{singleFolder.name} Folder</h1>
+      <div className=" flex items-center gap-5">
+        <Button
+          onClick={() => {
+            router.back();
+          }}
+          className=" bg-transparent shadow-none hover:bg-transparent"
+        >
+          {
+            <MoveLeftIcon className=" text-black text-xl font-bold hover:bg-transparent  p-0 bg-transparent" />
+          }
+        </Button>
+        <h2 className="text-xl font-semibold">{singleFolder.name} Folder</h2>
+      </div>
+
       <div>{renderContent()}</div>
+
+      <div className="mt-6 flex justify-end gap-4">
+        <Button onClick={() => setIsAddContentModalOpen(true)}>
+          Add Content
+        </Button>
+        <Button variant="secondary" onClick={() => {}}>
+          Add Folder
+        </Button>
+      </div>
+
       <AddContentModal
         isOpen={isAddContentModalOpen}
         onClose={() => setIsAddContentModalOpen(false)}
       />
-      <AddFolderModal
-        isOpen={false} // For now, you may want to toggle this similarly
-        onClose={() => {}}
-      />
+      <AddFolderModal isOpen={false} onClose={() => {}} />
     </div>
   );
 }
