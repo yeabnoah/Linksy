@@ -13,7 +13,7 @@ import { queryClient } from "@/util/query-client";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { AnimatePresence, motion } from "framer-motion";
-import { Loader2 } from "lucide-react";
+import { Loader2, FolderPlus } from "lucide-react";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -39,11 +39,11 @@ export function AddFolderModal({ isOpen, onClose }: AddContentModalProps) {
       return response.data;
     },
     onMutate: () => {
-      toast.loading("Creating Folder...");
+      toast.loading("📁 Creating Folder...");
     },
     onSuccess: () => {
       toast.dismiss();
-      toast.success("Folder Created successfully!");
+      toast.success("🎉 Folder Created successfully!");
       queryClient.invalidateQueries();
       resetForm();
       onClose();
@@ -52,8 +52,8 @@ export function AddFolderModal({ isOpen, onClose }: AddContentModalProps) {
       toast.dismiss();
       toast.error(
         error instanceof Error
-          ? error.message
-          : "An error occurred while creating folder."
+          ? `❌ ${error.message}`
+          : "❌ An error occurred while creating folder."
       );
     },
   });
@@ -72,7 +72,7 @@ export function AddFolderModal({ isOpen, onClose }: AddContentModalProps) {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold tracking-tight">
-            Add Folder
+            📁 Add Folder
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -86,13 +86,14 @@ export function AddFolderModal({ isOpen, onClose }: AddContentModalProps) {
             >
               <div className="space-y-2">
                 <Label htmlFor="type" className="text-sm font-medium">
-                  Folder Name
+                  📝 Folder Name
                 </Label>
 
                 <Input
                   onChange={(e) => {
                     setName(e.target.value);
                   }}
+                  placeholder="Enter folder name..."
                 />
               </div>
             </motion.div>
@@ -101,7 +102,7 @@ export function AddFolderModal({ isOpen, onClose }: AddContentModalProps) {
           <Button
             type="submit"
             className="w-full bg-primary hover:bg-primary/90 transition-colors"
-            // disabled={mutation.isPending || !contentType}
+            disabled={mutation.isPending || !name.trim()}
           >
             {mutation.isPending ? (
               <>
@@ -109,7 +110,10 @@ export function AddFolderModal({ isOpen, onClose }: AddContentModalProps) {
                 Adding...
               </>
             ) : (
-              "Add Content"
+              <>
+                <FolderPlus className="mr-2 h-4 w-4" />
+                Add Folder
+              </>
             )}
           </Button>
         </form>

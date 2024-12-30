@@ -85,10 +85,13 @@ export async function DELETE(
         userId: session.user.id,
         id: id,
       },
+      include: { content: true },
     });
 
     return NextResponse.json({
-      date: isDeleted,
+      success: true,
+      data: isDeleted,
+      message: "Folder and its contents deleted successfully",
     });
   } catch (err) {
     return NextResponse.json(

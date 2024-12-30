@@ -258,6 +258,7 @@ export default function Home() {
                     link={bookmark.link}
                     tags={bookmark.tags}
                     type={bookmark.type}
+                    // folder={bookmark.folder.name}
                   />
                 </motion.div>
               ))}

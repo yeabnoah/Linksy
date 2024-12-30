@@ -33,6 +33,7 @@ interface NoteCardProps {
   type: string;
   description: string;
   link: string;
+  // folder: string;
 }
 
 const typeIcons = {
@@ -49,7 +50,8 @@ export function NoteCard({
   tags,
   type,
   description,
-}: NoteCardProps) {
+}: // folder,
+NoteCardProps) {
   const [isHovered, setIsHovered] = useState(false);
 
   const deleteNoteMutation = useMutation({
@@ -110,6 +112,10 @@ export function NoteCard({
           </TooltipProvider>
         </CardHeader>
         <CardContent className="p-5 space-y-4">
+          {/* <div className=" flex gap-2 items-center">
+            <FolderIcon className=" h-4 w-4" />
+            {folder}
+          </div> */}
           <motion.div
             className="flex justify-center border rounded-md bg-background overflow-hidden"
             animate={{ height: isHovered ? "12rem" : "8rem" }}

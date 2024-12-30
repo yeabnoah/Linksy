@@ -18,6 +18,9 @@ export const GET = async () => {
       where: {
         userId: session.user.id,
       },
+      include: {
+        folder: true,
+      },
     });
 
     return NextResponse.json({
