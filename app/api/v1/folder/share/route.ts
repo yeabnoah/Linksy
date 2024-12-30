@@ -3,117 +3,115 @@ import getUserSession from "@/util/getUserData";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
-  const url = new URL(req.url);
-  const folderId = url.searchParams.get("folderId");
+  try {
+    const url = new URL(req.url);
+    const folderId = url.searchParams.get("folderId");
 
-  if (!folderId) {
-    return NextResponse.json(
-      {
-        message: "Folder ID is required and sharing is not allowed",
+    if (!folderId || isNaN(parseInt(folderId, 10))) {
+      return NextResponse.json(
+        { message: "Valid folder ID is required" },
+        { status: 400 }
+      );
+    }
+
+    const folderShare = await prisma.folderLink.findUnique({
+      where: {
+        folderId: parseInt(folderId, 10),
       },
-      { status: 400 }
+    });
+
+    if (!folderShare) {
+      return NextResponse.json(
+        { message: "No folder link found or sharing is not allowed" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(
+      { data: folderShare, success: true },
+      { status: 200 }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Something went wrong", error: error },
+      { status: 500 }
     );
   }
-
-  const folderShare = await prisma.folderLink.findUnique({
-    where: {
-      folderId: parseInt(folderId, 10),
-    },
-  });
-
-  if (!folderShare) {
-    return NextResponse.json(
-      {
-        message: "No folder link found or sharing is not allowed",
-      },
-      { status: 404 }
-    );
-  }
-
-  return NextResponse.json(
-    {
-      data: folderShare,
-      success: true,
-    },
-    { status: 200 }
-  );
 }
 
 export async function POST(req: NextRequest) {
-  const { id, share }: { id: number; share: boolean } = await req.json();
+  try {
+    const { id, share }: { id: number; share: boolean } = await req.json();
 
-  const session = await getUserSession();
-  if (!session) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "You are not authorized",
-        error: "authentication",
-        data: null,
+    if (!id || typeof share !== "boolean") {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Please provide a valid ID and sharing status",
+          error: "param",
+          data: null,
+        },
+        { status: 400 }
+      );
+    }
+
+    const session = await getUserSession();
+    if (!session) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Unauthorized",
+          error: "authentication",
+          data: null,
+        },
+        { status: 401 }
+      );
+    }
+
+    const folder = await prisma.folder.findUnique({
+      where: {
+        id,
+        userId: session.user.id,
       },
-      { status: 400 }
-    );
-  }
-
-  if (!id || !share) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "please provide all the necessary parameters",
-        error: "param",
-        data: null,
-      },
-      { status: 403 }
-    );
-  }
-
-  const folder = await prisma.folder.findUnique({
-    where: {
-      id: id,
-      userId: session.user.id,
-    },
-
-    include: {
-      folderLink: true,
-    },
-  });
-
-  if (!folder) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "no folder found with the given id",
-        error: "id: param",
-        data: null,
-      },
-      { status: 404 }
-    );
-  }
-
-  if (!folder.folderLink) {
-    const newFolderLink = prisma.folderLink.create({
-      data: {
-        hash: "",
-        allowed: share,
-        folderId: id,
+      include: {
+        folderLink: true,
       },
     });
 
-    return NextResponse.json({
-      data: newFolderLink,
+    if (!folder) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Folder not found",
+          error: "id: param",
+          data: null,
+        },
+        { status: 404 }
+      );
+    }
+
+    if (!folder.folderLink) {
+      const newFolderLink = await prisma.folderLink.create({
+        data: {
+          hash: crypto.randomUUID(),
+          allowed: share,
+          folderId: id,
+        },
+      });
+
+      return NextResponse.json({ data: newFolderLink });
+    }
+
+    const updatedFolderLink = await prisma.folderLink.update({
+      where: { folderId: id },
+      data: { allowed: share },
     });
+
+    return NextResponse.json({ data: updatedFolderLink });
+  } catch (error) {
+    return NextResponse.json(
+      { success: false, message: "Something went wrong", error: error },
+      { status: 500 }
+    );
   }
-
-  const updateFolderLink = prisma.folderLink.update({
-    where: {
-      folderId: id,
-    },
-    data: {
-      allowed: share,
-    },
-  });
-
-  return NextResponse.json({
-    data: updateFolderLink,
-  });
 }
