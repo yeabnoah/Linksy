@@ -24,7 +24,19 @@ import {
 } from "@radix-ui/react-dropdown-menu";
 import { MoreHorizontal, Edit, Trash } from "lucide-react";
 import { ShareModalFolder } from "@/components/share-modal-folder";
-// import { ShareModalFolder } from "@/components/share-modal-folder";
+
+const FILTERS = [
+  { label: "All Types", value: "" },
+  { label: "Telegram", value: "telegram" },
+  { label: "Twitter", value: "twitter" },
+  { label: "Instagram", value: "instagram" },
+  { label: "Youtube", value: "youtube" },
+  { label: "Reddit", value: "reddit" },
+  { label: "Discord", value: "discord" },
+  { label: "Pinterest", value: "pinterest" },
+  { label: "LinkedIn", value: "linkedin" },
+  { label: "Website", value: "website" },
+];
 
 export default function Folder({ params }: { params: { id: string } }) {
   const id = params.id;
@@ -32,6 +44,8 @@ export default function Folder({ params }: { params: { id: string } }) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [newFolderName, setNewFolderName] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const { singleFolder, setSingleFolder } = useSingleFoldersStore();
   const session = authClient.useSession();
@@ -97,10 +111,25 @@ export default function Folder({ params }: { params: { id: string } }) {
     staleTime: 1000 * 60 * 5,
     enabled: !!id,
     retry: 1,
-    // onError: (err) => {
-    //   console.error("Error fetching folder:", err);
-    //   toast.error(err);
-    // },
+  });
+
+  const filteredContent = singleFolder?.content.filter((bookmark) => {
+    if (!selectedFilter && !searchQuery) return true;
+    if (selectedFilter && bookmark.type !== selectedFilter) return false;
+    if (searchQuery) {
+      return (
+        bookmark.tags
+          .toLocaleString()
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
+        bookmark.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (bookmark.description &&
+          bookmark?.description
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()))
+      );
+    }
+    return true;
   });
 
   const renderContent = () => {
@@ -122,7 +151,7 @@ export default function Folder({ params }: { params: { id: string } }) {
       );
     }
 
-    if (!singleFolder?.content || singleFolder.content.length === 0) {
+    if (!filteredContent || filteredContent.length === 0) {
       return (
         <motion.div
           initial={{ opacity: 0 }}
@@ -151,7 +180,7 @@ export default function Folder({ params }: { params: { id: string } }) {
         exit={{ opacity: 0 }}
         className="bookmarks-list grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
       >
-        {singleFolder.content.map((bookmark) => (
+        {filteredContent.map((bookmark) => (
           <NoteCard
             id={bookmark.id}
             key={bookmark.id}
@@ -165,6 +194,15 @@ export default function Folder({ params }: { params: { id: string } }) {
       </motion.div>
     );
   };
+
+  // Debounce function for search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      // Execute search only when typing stops for 500ms
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   return (
     <div className="max-w-7xl mx-auto mt-5 px-4 sm:px-6 lg:px-8">
@@ -207,25 +245,25 @@ export default function Folder({ params }: { params: { id: string } }) {
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button size="icon" className=" border-black/20  ">
+              <Button size="icon" className="border-black/20">
                 <MoreHorizontal className="h-4 w-4" />
                 <span className="sr-only">Open menu</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="end"
-              className=" outline-none hover:outline-none hover:cursor-pointer bg-white py-2 px-3 border border-black/10 rounded-l-md rounded-br-md mr-4 mt-2  "
+              className="outline-none hover:outline-none hover:cursor-pointer bg-white py-2 px-3 border border-black/10 rounded-l-md rounded-br-md mr-4 mt-2"
             >
               <DropdownMenuItem
                 onClick={() => setIsEditModalOpen(true)}
-                className=" flex gap-2 items-center hover:bg-slate-100 p-2 rounded-md outline-none hover:outline-none hover:cursor-pointer"
+                className="flex gap-2 items-center hover:bg-slate-100 p-2 rounded-md outline-none hover:outline-none hover:cursor-pointer"
               >
                 <Edit className="mr-2 h-4 w-4" />
                 <span>Edit Folder</span>
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => setIsDeleteModalOpen(true)}
-                className="text-red-600 flex items-center gap-2 hover:bg-slate-100 rounded-md p-2  outline-none hover:outline-none hover:cursor-pointer"
+                className="text-red-600 flex items-center gap-2 hover:bg-slate-100 rounded-md p-2 outline-none hover:outline-none hover:cursor-pointer"
               >
                 <Trash className="mr-2 h-4 w-4" />
                 <span>Delete Folder</span>
@@ -235,6 +273,34 @@ export default function Folder({ params }: { params: { id: string } }) {
         </div>
       </div>
 
+      {/* Search and Filter Section */}
+      <div className="flex justify-start space-x-4 mb-6">
+        <input
+          type="text"
+          placeholder="Search Bookmarks..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="p-2 border rounded"
+        />
+        <Button
+          onClick={() => setSearchQuery(searchQuery)}
+          className="p-2 bg-blue-500 text-white rounded"
+        >
+          Search
+        </Button>
+        <select
+          className="p-2 border rounded"
+          value={selectedFilter}
+          onChange={(e) => setSelectedFilter(e.target.value)}
+        >
+          {FILTERS.map((filter) => (
+            <option key={filter.value} value={filter.value}>
+              {filter.label}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <div>{renderContent()}</div>
 
       <AddContentFolderModal
@@ -242,7 +308,6 @@ export default function Folder({ params }: { params: { id: string } }) {
         onClose={() => setIsAddContentModalOpen(false)}
       />
 
-      {/* Edit Folder Modal */}
       <Dialog.Root open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 bg-black/50" />
@@ -269,7 +334,6 @@ export default function Folder({ params }: { params: { id: string } }) {
         </Dialog.Portal>
       </Dialog.Root>
 
-      {/* Delete Folder Modal */}
       <Dialog.Root open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 bg-black/50" />
@@ -278,14 +342,13 @@ export default function Folder({ params }: { params: { id: string } }) {
               Delete Folder
             </Dialog.Title>
             <Dialog.Description className="text-gray-500 mb-4">
-              Are you sure you want to delete the folder `{singleFolder?.name}`?
-              This action cannot be undone.
+              Are you sure you want to delete this folder?
             </Dialog.Description>
             <div className="flex justify-end gap-2">
               <Dialog.Close asChild>
                 <Button variant="secondary">Cancel</Button>
               </Dialog.Close>
-              <Button variant="destructive" onClick={handleDeleteFolder}>
+              <Button onClick={handleDeleteFolder} variant="destructive">
                 Delete
               </Button>
             </div>
@@ -294,9 +357,9 @@ export default function Folder({ params }: { params: { id: string } }) {
       </Dialog.Root>
 
       <ShareModalFolder
+        itemCount={10}
         isOpen={isShareModalOpen}
         onClose={() => setIsShareModalOpen(false)}
-        itemCount={singleFolder?.content.length}
       />
     </div>
   );

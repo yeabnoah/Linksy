@@ -57,7 +57,7 @@ export async function GET(
         {
           data: folder,
         },
-        { status: 404 }
+        { status: 200 }
       );
     }
   } catch (error) {

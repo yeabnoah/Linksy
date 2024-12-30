@@ -2,7 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import dataComing from "@/interface/dataIncoming";
+import dataComingFolderShare from "@/interface/dataIncoming";
+import useSingleFoldersStore from "@/state/singleFolderStore";
 import axios from "axios";
 import { AnimatePresence, motion } from "framer-motion";
 import { Copy, Lock, Share2 } from "lucide-react";
@@ -25,20 +26,24 @@ export function ShareModalFolder({
   const [allowed, setAllowed] = useState<boolean>(false);
   const [link, setLink] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { singleFolder } = useSingleFoldersStore();
 
   useEffect(() => {
     const fetchShareData = async () => {
       if (isOpen) {
         setIsLoading(true);
         try {
-          const response = await axios.get("/api/v1/brain/share", {
-            withCredentials: true,
-          });
-          const data = response.data as dataComing;
+          const response = await axios.get(
+            `/api/v1/folder/share?folderId=${singleFolder.id}`,
+            {
+              withCredentials: true,
+            }
+          );
+          const data = response.data as dataComingFolderShare;
           if (data.data.hash) {
             setShareHash(data.data.hash);
             setAllowed(data.data.allowed);
-            setLink(`${window.location.origin}/share/${data.data.hash}`);
+            setLink(`${window.location.origin}/share/folder/${data.data.hash}`);
           }
         } catch (error) {
           toast.error(`Failed to fetch sharing data. : ${error}`);
@@ -54,8 +59,11 @@ export function ShareModalFolder({
   const handleStopSharing = async () => {
     try {
       await axios.post(
-        "/api/v1/brain/share",
-        { shareApproved: false },
+        "/api/v1/folder/share",
+        {
+          id: singleFolder.id,
+          share: false,
+        },
         { withCredentials: true }
       );
       toast.success("Sharing disabled successfully");
@@ -70,15 +78,18 @@ export function ShareModalFolder({
   const handleStartSharing = async () => {
     try {
       const response = await axios.post(
-        "/api/v1/brain/share",
-        { shareApproved: true },
+        "/api/v1/folder/share",
+        {
+          id: singleFolder.id,
+          share: true,
+        },
         { withCredentials: true }
       );
-      const data = response.data as dataComing;
+      const data = response.data as dataComingFolderShare;
       if (data.data.hash) {
         toast.success("Sharing enabled successfully");
         setShareHash(data.data.hash);
-        setLink(`${window.location.origin}/share/${data.data.hash}`);
+        setLink(`${window.location.origin}/share/folder/${data.data.hash}`);
         setAllowed(true);
       } else {
         toast.error("Sharing enabled, but no hash received.");
@@ -98,7 +109,7 @@ export function ShareModalFolder({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-xl p-0 overflow-hidden">
+      <DialogContent className="sm:max-w-fit p-0 overflow-hidden">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

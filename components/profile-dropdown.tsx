@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 interface ProfileDropdownProps {
   user: {
@@ -23,6 +24,7 @@ interface ProfileDropdownProps {
 
 export function ProfileDropdown({ user }: ProfileDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
@@ -47,6 +49,7 @@ export function ProfileDropdown({ user }: ProfileDropdownProps) {
         <DropdownMenuItem
           onClick={async () => {
             await authClient.signOut();
+            router.push("/sign-in");
           }}
         >
           Log out

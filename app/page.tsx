@@ -6,6 +6,7 @@ import { NoteCard } from "@/components/note-card";
 import { ProfileDropdown } from "@/components/profile-dropdown";
 import { ShareModal } from "@/components/share-modal";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import folderInterface from "@/interface/folder_interface";
 import { authClient } from "@/lib/auth-client";
 import { useBookmarkStore } from "@/state/bookmarkStore";
@@ -14,11 +15,11 @@ import useSingleFoldersStore from "@/state/singleFolderStore";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { AnimatePresence, motion } from "framer-motion";
-import { Bookmark, FolderIcon, Plus, Share2 } from "lucide-react";
+import { Bookmark, FolderIcon, Plus, Search, Share2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-type Test =
+type ButtonVariant =
   | "outline"
   | "default"
   | "link"
@@ -31,13 +32,13 @@ const BUTTONS = [
     icon: <Share2 className="w-4 h-4 mr-2" />,
     label: "Share my Bookmark",
     onClick: "setIsShareModalOpen",
-    variant: "outline",
+    variant: "outline" as ButtonVariant,
   },
   {
     icon: <Plus className="w-4 h-4 mr-2" />,
     label: "Add new Bookmark",
     onClick: "setIsAddContentModalOpen",
-    variant: "default",
+    variant: "default" as ButtonVariant,
   },
 ];
 
@@ -60,10 +61,16 @@ export default function Home() {
   const [isAddFolderModalOpen, setIsAddFolderModalOpen] = useState(false);
   const [showAllFolders, setShowAllFolders] = useState(false);
   const { setFolders } = useFoldersStore();
+  const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
 
-  const { filteredBookmarks, refetchBookmarks, filterByType, currentFilter } =
-    useBookmarkStore();
+  const {
+    filteredBookmarks,
+    refetchBookmarks,
+    filterByType,
+    currentFilter,
+    setSearchQuery: setSearch,
+  } = useBookmarkStore();
   const { setSingleFolder } = useSingleFoldersStore();
 
   const {
@@ -99,8 +106,8 @@ export default function Home() {
     BUTTONS.map(({ icon, label, onClick, variant }) => (
       <Button
         key={label}
-        variant={variant as Test}
-        className="font-medium flex items-center justify-center text-center transition-all duration-200 ease-in-out hover:scale-105"
+        variant={variant}
+        className="font-medium flex items-center justify-center text-center transition-all duration-200 ease-in-out hover:scale-105 text-sm sm:text-base"
         onClick={() => {
           if (onClick === "setIsShareModalOpen") {
             setIsShareModalOpen(true);
@@ -114,25 +121,25 @@ export default function Home() {
       </Button>
     ));
 
-  const renderFilters = () =>
-    FILTERS.map(({ label, value }) => (
-      <motion.li
-        key={value}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        <button
+  const renderFilters = () => (
+    <div className="flex flex-wrap gap-2 mb-4">
+      {FILTERS.map(({ label, value }) => (
+        <motion.button
+          key={value}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           onClick={() => filterByType(value)}
-          className={`text-lg transition-all duration-200 ease-in-out ${
+          className={`text-sm sm:text-base transition-all duration-200 ease-in-out px-3 py-1 rounded-full ${
             currentFilter === value
-              ? "font-bold text-primary"
-              : "text-muted-foreground hover:text-primary"
+              ? "font-bold text-primary bg-primary/10"
+              : "text-muted-foreground hover:text-primary hover:bg-primary/5"
           }`}
         >
           {label}
-        </button>
-      </motion.li>
-    ));
+        </motion.button>
+      ))}
+    </div>
+  );
 
   const renderFolders = () => {
     const foldersToShow = showAllFolders ? folder : folder.slice(0, 4);
@@ -148,14 +155,16 @@ export default function Home() {
             router.push(`/folder/${each.id}`);
             setSingleFolder(each);
           }}
-          className="w-64 h-40 bg-white border-primary/15 shadow-sm border-[0.5px] rounded-lg flex items-center justify-center mb-2"
+          className="w-full h-32 sm:w-64 sm:h-40 bg-white border-primary/15 shadow-sm border-[0.5px] rounded-lg flex items-center justify-center mb-2"
         >
           <FolderIcon
-            className=" h-20 w-20 text-primary/30"
+            className="h-16 w-16 sm:h-20 sm:w-20 text-primary/30"
             fill="rgb(9 9 11 / 0.7)"
           />
         </button>
-        <span className="text-base font-medium mx-2">{each.name}</span>
+        <span className="text-sm sm:text-base font-medium mx-2">
+          {each.name}
+        </span>
       </motion.div>
     ));
   };
@@ -164,8 +173,8 @@ export default function Home() {
     <div className="min-h-screen bg-background max-w-7xl mx-auto">
       <main className="container mx-auto px-4 py-8">
         <div className="flex flex-col space-y-4 sm:flex-row sm:justify-between sm:items-center mb-8">
-          <h1 className="text-3xl font-bold tracking-tight text-primary flex items-center">
-            <Bookmark className="w-8 h-8 mr-2" />
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-primary flex items-center">
+            <Bookmark className="w-6 h-6 sm:w-8 sm:h-8 mr-2" />
             Bookmarks
           </h1>
           <div className="flex items-center space-x-3">
@@ -174,44 +183,61 @@ export default function Home() {
           </div>
         </div>
 
+        <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-3 my-5">
+          <div className="relative flex-grow">
+            <Input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => {
+                const value = e.target.value;
+                setSearchQuery(value);
+                setSearch(value);
+              }}
+              placeholder="Search bookmarks"
+              className="pl-10"
+            />
+            <Search className=" h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          </div>
+          {renderFilters()}
+        </div>
+
         <div className="mb-12">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-semibold text-primary">Folders</h2>
+            <h2 className="text-xl sm:text-2xl font-semibold text-primary">
+              Folders
+            </h2>
             <Button
-              className="rounded-sm"
+              className="rounded-sm text-sm sm:text-base"
               onClick={() => {
                 setIsAddFolderModalOpen(true);
               }}
             >
-              <Plus className="w-4 h-4 text-white" color="white" />
+              <Plus className="w-4 h-4 text-white mr-2" color="white" />
               Create Folder
             </Button>
           </div>
+
           {isFetchingFolders ? (
             <p>Loading folders...</p>
           ) : isFolderFetchError ? (
             <p>Error fetching folders</p>
           ) : (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
                 {renderFolders()}
               </div>
               {folder.length > 4 && (
                 <Button
                   onClick={() => setShowAllFolders(!showAllFolders)}
                   className="mt-4"
-                  variant="outline"
+                  variant="link"
                 >
-                  {showAllFolders ? "Show Less" : "See All Folders"}
+                  {showAllFolders ? "Show Less" : "Show More"}
                 </Button>
               )}
             </>
           )}
         </div>
-
-        <nav className="mb-8 overflow-x-auto">
-          <ul className="flex flex-nowrap gap-6 pb-2">{renderFilters()}</ul>
-        </nav>
 
         <AnimatePresence mode="wait">
           {filteredBookmarks.length === 0 ? (
@@ -222,7 +248,7 @@ export default function Home() {
               exit={{ opacity: 0 }}
               className="flex flex-col items-center justify-center mt-16"
             >
-              <p className="text-lg text-muted-foreground">
+              <p className="text-base sm:text-lg text-muted-foreground text-center">
                 No bookmarks found. Add some to get started!
               </p>
               <Button
@@ -240,7 +266,7 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+              className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3"
             >
               {filteredBookmarks.map((bookmark) => (
                 <motion.div
@@ -258,7 +284,6 @@ export default function Home() {
                     link={bookmark.link}
                     tags={bookmark.tags}
                     type={bookmark.type}
-                    // folder={bookmark.folder.name}
                   />
                 </motion.div>
               ))}
@@ -267,11 +292,7 @@ export default function Home() {
         </AnimatePresence>
       </main>
 
-      <ShareModal
-        isOpen={isShareModalOpen}
-        onClose={() => setIsShareModalOpen(false)}
-        itemCount={filteredBookmarks.length}
-      />
+      {/* Modals */}
       <AddContentModal
         isOpen={isAddContentModalOpen}
         onClose={() => setIsAddContentModalOpen(false)}
@@ -279,6 +300,11 @@ export default function Home() {
       <AddFolderModal
         isOpen={isAddFolderModalOpen}
         onClose={() => setIsAddFolderModalOpen(false)}
+      />
+      <ShareModal
+        isOpen={isShareModalOpen}
+        itemCount={10}
+        onClose={() => setIsShareModalOpen(false)}
       />
     </div>
   );

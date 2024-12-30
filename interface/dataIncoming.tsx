@@ -1,4 +1,4 @@
-interface dataComing {
+interface dataComingFolderShare {
   data: {
     id: number;
     hash: string;
@@ -7,4 +7,4 @@ interface dataComing {
   };
 }
 
-export default dataComing;
+export default dataComingFolderShare;
