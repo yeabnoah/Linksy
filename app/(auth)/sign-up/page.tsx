@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { toast } from "sonner";
+import { toast } from "react-hot-toast";
 import { EyeIcon, EyeOffIcon, Loader2, X, Upload } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
