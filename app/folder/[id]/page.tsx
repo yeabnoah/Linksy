@@ -1,9 +1,10 @@
 "use client";
 
-import { AddContentModal } from "@/components/add-content-modal";
-import { AddFolderModal } from "@/components/add-folder";
+import { AddContentFolderModal } from "@/components/add-content-folder";
 import { NoteCard } from "@/components/note-card";
 import { ProfileDropdown } from "@/components/profile-dropdown";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import folderInterface from "@/interface/folder_interface";
 import { authClient } from "@/lib/auth-client";
 import useSingleFoldersStore from "@/state/singleFolderStore";
@@ -11,10 +12,8 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { Bookmark, Loader, MoveLeftIcon } from "lucide-react";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function Folder({ params }: { params: { id: string } }) {
   const id = params.id;
@@ -106,36 +105,34 @@ export default function Folder({ params }: { params: { id: string } }) {
         </div>
       </div>
 
-      <div className=" flex items-center gap-5">
-        <Button
-          onClick={() => {
-            router.back();
-          }}
-          className=" bg-transparent shadow-none hover:bg-transparent"
-        >
-          {
-            <MoveLeftIcon className=" text-black text-xl font-bold hover:bg-transparent  p-0 bg-transparent" />
-          }
-        </Button>
-        <h2 className="text-xl font-semibold">{singleFolder.name} Folder</h2>
+      <div className=" flex justify-between items-center my-5">
+        <div className=" flex items-center gap-5">
+          <Button
+            onClick={() => {
+              router.back();
+            }}
+            className=" bg-transparent shadow-none hover:bg-transparent"
+          >
+            {
+              <MoveLeftIcon className=" text-black text-xl font-bold hover:bg-transparent  p-0 bg-transparent" />
+            }
+          </Button>
+          <h2 className="text-xl font-semibold">{singleFolder.name} Folder</h2>
+        </div>
+
+        <div className="mt-6 flex justify-end gap-4">
+          <Button onClick={() => setIsAddContentModalOpen(true)}>
+            Add Content
+          </Button>
+        </div>
       </div>
 
       <div>{renderContent()}</div>
 
-      <div className="mt-6 flex justify-end gap-4">
-        <Button onClick={() => setIsAddContentModalOpen(true)}>
-          Add Content
-        </Button>
-        <Button variant="secondary" onClick={() => {}}>
-          Add Folder
-        </Button>
-      </div>
-
-      <AddContentModal
+      <AddContentFolderModal
         isOpen={isAddContentModalOpen}
         onClose={() => setIsAddContentModalOpen(false)}
       />
-      <AddFolderModal isOpen={false} onClose={() => {}} />
     </div>
   );
 }

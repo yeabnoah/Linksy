@@ -32,7 +32,7 @@ import {
   PodcastIcon,
 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
-import useFoldersStore from "@/state/folderContent";
+import useSingleFoldersStore from "@/state/singleFolderStore";
 
 interface AddContentModalProps {
   isOpen: boolean;
@@ -72,15 +72,17 @@ const contentTypes = [
   },
 ];
 
-export function AddContentModal({ isOpen, onClose }: AddContentModalProps) {
+export function AddContentFolderModal({
+  isOpen,
+  onClose,
+}: AddContentModalProps) {
   const [contentType, setContentType] = useState<string>("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [link, setLink] = useState("");
   const [tagsInput, setTagsInput] = useState("");
-  const [selectedFolder, setSelectedFolder] = useState<number | null>(null);
 
-  const { folders } = useFoldersStore();
+  const { singleFolder } = useSingleFoldersStore();
 
   const mutation = useMutation({
     mutationFn: async () => {
@@ -93,7 +95,7 @@ export function AddContentModal({ isOpen, onClose }: AddContentModalProps) {
           type: contentType,
           tags,
           description: content,
-          folderId: selectedFolder,
+          folderId: singleFolder.id,
         },
         {
           withCredentials: true,
@@ -132,7 +134,6 @@ export function AddContentModal({ isOpen, onClose }: AddContentModalProps) {
     setContent("");
     setLink("");
     setTagsInput("");
-    setSelectedFolder(null); // Reset folder selection
   };
 
   return (
@@ -195,33 +196,6 @@ export function AddContentModal({ isOpen, onClose }: AddContentModalProps) {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="folder" className="text-sm font-medium">
-                      Folder
-                    </Label>
-                    <Select
-                      value={selectedFolder?.toString() || ""}
-                      onValueChange={(value) =>
-                        setSelectedFolder(Number(value))
-                      }
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select folder" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {folders.map((folder) => (
-                          <SelectItem
-                            key={folder.id}
-                            value={folder.id.toString()}
-                            className="font-medium"
-                          >
-                            {folder.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
                     <Label htmlFor="content" className="text-sm font-medium">
                       Content
                     </Label>
@@ -269,7 +243,7 @@ export function AddContentModal({ isOpen, onClose }: AddContentModalProps) {
           <Button
             type="submit"
             className="w-full bg-primary hover:bg-primary/90 transition-colors"
-            disabled={mutation.isPending || !contentType || !selectedFolder}
+            disabled={mutation.isPending || !contentType}
           >
             {mutation.isPending ? (
               <>

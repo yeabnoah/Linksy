@@ -58,6 +58,7 @@ export default function Home() {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isAddContentModalOpen, setIsAddContentModalOpen] = useState(false);
   const [isAddFolderModalOpen, setIsAddFolderModalOpen] = useState(false);
+  const [showAllFolders, setShowAllFolders] = useState(false);
   const { setFolders } = useFoldersStore();
   const router = useRouter();
 
@@ -133,8 +134,9 @@ export default function Home() {
       </motion.li>
     ));
 
-  const renderFolders = () =>
-    folder.map((each) => (
+  const renderFolders = () => {
+    const foldersToShow = showAllFolders ? folder : folder.slice(0, 4);
+    return foldersToShow.map((each) => (
       <motion.div
         key={each.id}
         whileHover={{ scale: 1.05 }}
@@ -156,6 +158,7 @@ export default function Home() {
         <span className="text-base font-medium mx-2">{each.name}</span>
       </motion.div>
     ));
+  };
 
   return (
     <div className="min-h-screen bg-background max-w-7xl mx-auto">
@@ -189,9 +192,20 @@ export default function Home() {
           ) : isFolderFetchError ? (
             <p>Error fetching folders</p>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {renderFolders()}
-            </div>
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {renderFolders()}
+              </div>
+              {folder.length > 4 && (
+                <Button
+                  onClick={() => setShowAllFolders(!showAllFolders)}
+                  className="mt-4"
+                  variant="outline"
+                >
+                  {showAllFolders ? "Show Less" : "See All Folders"}
+                </Button>
+              )}
+            </>
           )}
         </div>
 
