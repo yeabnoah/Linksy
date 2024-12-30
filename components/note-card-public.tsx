@@ -1,29 +1,23 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
-import {
-  InstagramIcon,
-  MessageSquareIcon,
-  Trash2,
-  TwitterIcon,
-  YoutubeIcon,
-  ExternalLinkIcon,
-} from "lucide-react";
-import toast from "react-hot-toast";
-import { InstagramEmbed, XEmbed, YouTubeEmbed } from "react-social-media-embed";
-import TelegramPost from "./telegramEmbed";
-import { queryClient } from "@/util/query-client";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  ExternalLinkIcon,
+  InstagramIcon,
+  MessageSquareIcon,
+  TwitterIcon,
+  YoutubeIcon,
+} from "lucide-react";
+import { useState } from "react";
+import { InstagramEmbed, XEmbed, YouTubeEmbed } from "react-social-media-embed";
+import TelegramPost from "./telegramEmbed";
 
 interface NoteCardProps {
   id: number;
@@ -42,7 +36,6 @@ const typeIcons = {
 };
 
 export function NoteCardTrash({
-  id,
   title,
   link,
   tags,
@@ -51,25 +44,21 @@ export function NoteCardTrash({
 }: NoteCardProps) {
   const [isHovered, setIsHovered] = useState(false);
 
-  const deleteNoteMutation = useMutation({
-    mutationFn: async (id: number) => {
-      const response = await axios.delete(`/api/v1/content/${id}`, {
-        withCredentials: true,
-      });
-      return response.data;
-    },
-    onSuccess: () => {
-      toast.success("Note deleted successfully!");
-      queryClient.invalidateQueries();
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || "Failed to delete the note.");
-    },
-  });
-
-  const handleDelete = () => {
-    deleteNoteMutation.mutate(id);
-  };
+  // const deleteNoteMutation = useMutation({
+  //   mutationFn: async (id: number) => {
+  //     const response = await axios.delete(`/api/v1/content/${id}`, {
+  //       withCredentials: true,
+  //     });
+  //     return response.data;
+  //   },
+  //   onSuccess: () => {
+  //     toast.success("Note deleted successfully!");
+  //     queryClient.invalidateQueries();
+  //   },
+  //   onError: (error: Error) => {
+  //     toast.error(error.message || "Failed to delete the note.");
+  //   },
+  // });
 
   const TypeIcon = typeIcons[type as keyof typeof typeIcons];
 

@@ -72,7 +72,6 @@ const ShareComponent = ({ params }: { params: { id: string } }) => {
     enabled: !!userId,
   });
 
-  // Filter and search logic
   const filteredData = posts?.filter((post) => {
     const matchesSearch =
       post.tags
@@ -121,7 +120,7 @@ const ShareComponent = ({ params }: { params: { id: string } }) => {
           <div className="flex items-center gap-2">
             <p className="text-sm sm:text-base font-semibold">
               shared from{" "}
-              <span className="font-medium">"{user.name.split(" ")[0]}"</span>
+              <span className="font-medium">{user.name.split(" ")[0]}</span>
             </p>
             <img
               src={user.image}
@@ -158,7 +157,6 @@ const ShareComponent = ({ params }: { params: { id: string } }) => {
         </select>
       </div>
 
-      {/* Displaying filtered data */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredData?.map((each) => (
           <NoteCardTrash

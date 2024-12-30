@@ -5,7 +5,7 @@ import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import folderInterface from "@/interface/folder_interface";
-import { Bookmark, FolderIcon, Search } from "lucide-react";
+import { Bookmark, Search } from "lucide-react";
 import Link from "next/link";
 import { Spinner } from "@/components/spinner";
 
@@ -129,9 +129,7 @@ const ShareComponent = ({ params }: { params: { id: string } }) => {
           <div className="flex items-center gap-2">
             <p className="text-sm sm:text-lg font-semibold">
               shared from{" "}
-              <span className="font-medium">
-                "{userData.name.split(" ")[0]}"
-              </span>
+              <span className="font-medium">{userData.name.split(" ")[0]}</span>
             </p>
             <img
               src={userData.image}

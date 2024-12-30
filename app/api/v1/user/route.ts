@@ -24,7 +24,7 @@ export const GET = async (req: NextRequest) => {
     }
 
     return NextResponse.json({ data: user }, { status: 200 });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error fetching user:", error);
 
     return NextResponse.json(
