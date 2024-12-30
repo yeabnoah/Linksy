@@ -26,6 +26,7 @@ export const GET = async () => {
       },
       include: {
         content: true,
+        folderLink: true,
       },
     });
 

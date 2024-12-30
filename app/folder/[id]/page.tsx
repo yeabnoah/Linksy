@@ -11,11 +11,10 @@ import useSingleFoldersStore from "@/state/singleFolderStore";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { motion } from "framer-motion";
-import { Bookmark, Loader, MoveLeftIcon } from "lucide-react";
+import { Bookmark, Loader, MoveLeftIcon, Share2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-// import { Toaster, toast } from "@/components/ui/toaster";
 import { toast } from "react-hot-toast";
 import {
   DropdownMenu,
@@ -24,6 +23,8 @@ import {
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
 import { MoreHorizontal, Edit, Trash } from "lucide-react";
+import { ShareModalFolder } from "@/components/share-modal-folder";
+// import { ShareModalFolder } from "@/components/share-modal-folder";
 
 export default function Folder({ params }: { params: { id: string } }) {
   const id = params.id;
@@ -36,6 +37,7 @@ export default function Folder({ params }: { params: { id: string } }) {
   const session = authClient.useSession();
   const router = useRouter();
   const queryClient = useQueryClient();
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   useEffect(() => {
     if (singleFolder) {
@@ -173,6 +175,15 @@ export default function Folder({ params }: { params: { id: string } }) {
         </h1>
 
         <div className="flex items-center space-x-3">
+          <Button
+            className="font-medium flex items-center justify-center text-center transition-all duration-200 ease-in-out hover:scale-105"
+            onClick={() => {
+              setIsShareModalOpen(!isShareModalOpen);
+            }}
+          >
+            <Share2Icon />
+            <span className="hidden sm:inline">Share Modal</span>
+          </Button>
           <ProfileDropdown user={user} />
         </div>
       </div>
@@ -281,6 +292,12 @@ export default function Folder({ params }: { params: { id: string } }) {
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>
+
+      <ShareModalFolder
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        itemCount={singleFolder?.content.length}
+      />
     </div>
   );
 }
