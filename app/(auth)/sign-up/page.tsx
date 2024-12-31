@@ -71,24 +71,26 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="flex justify-center min-h-screen bg-gradient-to-br from-gray-100 to-gray-200">
-      <div className="w-full lg:w-1/2 flex justify-center items-center  p-4">
+    <div className="flex justify-center min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 p-4">
+      <div className="w-full max-w-md  md:max-w-xl  flex justify-center items-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="w-full max-w-md"
+          className="w-full"
         >
-          <Card className="shadow-lg">
+          <Card className="shadow-lg w-full">
             <CardHeader>
-              <CardTitle className="text-2xl font-bold">Sign Up</CardTitle>
+              <CardTitle className="md:text-2xl text-xl font-bold">
+                Sign Up
+              </CardTitle>
               <CardDescription>
                 Create an account to get started
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="firstName">First name</Label>
                     <Input
@@ -96,6 +98,7 @@ export default function SignUpPage() {
                       name="firstName"
                       placeholder="John"
                       required
+                      className=" text-sm md:text-base"
                       value={formData.firstName}
                       onChange={handleInputChange}
                     />
@@ -107,6 +110,7 @@ export default function SignUpPage() {
                       name="lastName"
                       placeholder="Doe"
                       required
+                      className=" text-sm md:text-base"
                       value={formData.lastName}
                       onChange={handleInputChange}
                     />
@@ -118,6 +122,7 @@ export default function SignUpPage() {
                     id="email"
                     name="email"
                     type="email"
+                    className=" text-sm md:text-base"
                     placeholder="john@example.com"
                     required
                     value={formData.email}
@@ -134,13 +139,13 @@ export default function SignUpPage() {
                       required
                       value={formData.password}
                       onChange={handleInputChange}
-                      className="pr-10"
+                      className="pr-10 text-sm md:text-base"
                     />
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
-                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                      className="absolute text-sm md:text-base right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? (
@@ -158,13 +163,14 @@ export default function SignUpPage() {
                     name="passwordConfirmation"
                     type="password"
                     required
+                    className=" text-sm md:text-base"
                     value={formData.passwordConfirmation}
                     onChange={handleInputChange}
                   />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="image">Profile Image (optional)</Label>
-                  <div className="flex items-center space-x-4">
+                  <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4">
                     {imagePreview && (
                       <div className="relative w-16 h-16 rounded-full overflow-hidden">
                         <Image
@@ -172,10 +178,11 @@ export default function SignUpPage() {
                           alt="Profile preview"
                           layout="fill"
                           objectFit="cover"
+                          className=" text-sm md:text-base"
                         />
                       </div>
                     )}
-                    <div className="flex-1 flex items-center">
+                    <div className="flex-1 flex items-center w-full">
                       <Input
                         id="image"
                         type="file"
