@@ -27,6 +27,7 @@ enum type {
   discord
   reddit
   slack
+  pinterest
 }
 
 

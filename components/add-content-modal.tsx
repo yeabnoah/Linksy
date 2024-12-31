@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -19,20 +17,22 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import useFoldersStore from "@/state/folderContent";
 import { queryClient } from "@/util/query-client";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import {
-  DockIcon,
-  InstagramIcon,
-  TelescopeIcon,
-  TwitterIcon,
-  YoutubeIcon,
-  Loader2,
-  PodcastIcon,
-} from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { InstagramIcon, Loader2, TwitterIcon, YoutubeIcon } from "lucide-react";
+import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import useFoldersStore from "@/state/folderContent";
+import {
+  FaDiscord,
+  FaGlobe,
+  FaPinterest,
+  FaReddit,
+  FaTelegram,
+  FaLinkedin,
+} from "react-icons/fa6";
 
 interface AddContentModalProps {
   isOpen: boolean;
@@ -58,17 +58,32 @@ const contentTypes = [
   {
     value: "telegram",
     label: "Telegram",
-    icon: <TelescopeIcon className="w-4 h-4" />,
-  },
-  {
-    value: "article",
-    label: "Article",
-    icon: <DockIcon className="w-4 h-4" />,
+    icon: <FaTelegram className="w-4 h-4" />,
   },
   {
     value: "reddit",
     label: "Reddit",
-    icon: <PodcastIcon className="w-4 h-4" />,
+    icon: <FaReddit className="w-4 h-4" />,
+  },
+  {
+    value: "discord",
+    label: "Discord",
+    icon: <FaDiscord className="w-4 h-4" />,
+  },
+  {
+    value: "pinterest",
+    label: "Pinterest",
+    icon: <FaPinterest className="w-4 h-4" />,
+  },
+  {
+    value: "linkedin",
+    label: "LinkedIn",
+    icon: <FaLinkedin className="w-4 h-4" />,
+  },
+  {
+    value: "website",
+    label: "Website",
+    icon: <FaGlobe className="w-4 h-4" />,
   },
 ];
 
@@ -132,7 +147,7 @@ export function AddContentModal({ isOpen, onClose }: AddContentModalProps) {
     setContent("");
     setLink("");
     setTagsInput("");
-    setSelectedFolder(null); // Reset folder selection
+    setSelectedFolder(null);
   };
 
   return (

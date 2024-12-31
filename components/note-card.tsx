@@ -23,6 +23,8 @@ import {
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { InstagramEmbed, XEmbed, YouTubeEmbed } from "react-social-media-embed";
+import DiscordEmbed from "./discordWidget";
+import Linkedin from "./linkedin";
 import RedditEmbed from "./redditEmbed";
 import TelegramPost from "./telegramEmbed";
 
@@ -133,9 +135,10 @@ NoteCardProps) {
             {type === "telegram" && (
               <TelegramPost type="telegram" link={link} />
             )}
-            {type === "reddit" && (
-              <RedditEmbed postUrl="https://www.reddit.com/r/tailwindcss/comments/1hnnzxa/i_built_a_free_noads_wordle_clone_with_almost/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button" />
-            )}
+            {type === "reddit" && <RedditEmbed postUrl={link} />}
+
+            {type === "discord" && <DiscordEmbed link={link} />}
+            {type === "linkedin" && <Linkedin link={link} />}
           </motion.div>
           <AnimatePresence>
             {isHovered && (
