@@ -16,6 +16,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { AnimatePresence, motion } from "framer-motion";
 import { Bookmark, FolderIcon, Plus, Search, Share2 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -129,7 +130,7 @@ export default function Home() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => filterByType(value)}
-          className={`text-sm sm:text-base transition-all duration-200 ease-in-out px-3 py-1 rounded-full ${
+          className={`text-sm md:text-base transition-all duration-200 ease-in-out px-3 py-1 rounded-full ${
             currentFilter === value
               ? "font-bold text-primary bg-primary/10"
               : "text-muted-foreground hover:text-primary hover:bg-primary/5"
@@ -155,7 +156,7 @@ export default function Home() {
             router.push(`/folder/${each.id}`);
             setSingleFolder(each);
           }}
-          className="w-full h-32 sm:w-64 sm:h-40 bg-white border-primary/15 shadow-sm border-[0.5px] rounded-lg flex items-center justify-center mb-2"
+          className=" w-28 h-28 w- md:w-64 md:h-40 bg-white border-primary/15 shadow-sm border-[0.5px] rounded-lg flex items-center justify-center mb-2"
         >
           <FolderIcon
             className="h-16 w-16 sm:h-20 sm:w-20 text-primary/30"
@@ -170,13 +171,17 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden max-w-7xl mx-auto">
+    <div className="min-h-screen bg-background overflow-x-hidden max-w-full md:max-w-7xl mx-auto">
       <main className="container mx-auto px-4 md:py-8 py-5">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="md:text-2xl text-xl md:font-bold font-semibold tracking-tight text-primary flex items-center">
-            <Bookmark className="w-6 h-6 sm:w-8 sm:h-8 mr-2" />
-            Bookmarks
-          </h1>
+          <Link href="/" className="flex items-center gap-2">
+            <div className="h-6 w-6 md:h-8 md:w-8 rounded-full bg-foreground flex items-center justify-center">
+              <div className="w-3 h-3 md:w-4 md:h-4 bg-background rounded-full" />
+            </div>
+            <span className="font-semibold text-lg md:text-xl text-foreground">
+              Linksy
+            </span>
+          </Link>
           <div className="flex items-center space-x-3">
             {renderButtons()}
             <ProfileDropdown user={user} />
@@ -194,7 +199,7 @@ export default function Home() {
                 setSearch(value);
               }}
               placeholder="Search bookmarks"
-              className="pl-10"
+              className="pl-10 placeholder:text-sm placeholder:md:text-base"
             />
             <Search className=" h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
           </div>
@@ -203,11 +208,12 @@ export default function Home() {
 
         <div className="mb-12">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl sm:text-2xl font-semibold text-primary">
+            <h2 className="text-xl md:text-2xl font-semibold text-primary">
               Folders
             </h2>
             <Button
               className="rounded-sm text-sm sm:text-base"
+              size="sm"
               onClick={() => {
                 setIsAddFolderModalOpen(true);
               }}
@@ -218,7 +224,7 @@ export default function Home() {
           </div>
 
           {isFetchingFolders ? (
-            <p>Loading folders...</p>
+            <p className=" text-center">Loading folders...</p>
           ) : isFolderFetchError ? (
             <p>Error fetching folders</p>
           ) : (
@@ -226,15 +232,16 @@ export default function Home() {
               <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
                 {renderFolders()}
               </div>
-              {folder.length > 4 && (
-                <Button
-                  onClick={() => setShowAllFolders(!showAllFolders)}
-                  className="mt-4"
-                  variant="link"
-                >
-                  {showAllFolders ? "Show Less" : "Show More"}
-                </Button>
-              )}
+              {folder.length > 4 &&
+                -(
+                  <Button
+                    onClick={() => setShowAllFolders(!showAllFolders)}
+                    className="mt-4"
+                    variant="link"
+                  >
+                    {showAllFolders ? "Show Less" : "Show More"}
+                  </Button>
+                )}
             </>
           )}
         </div>
@@ -246,9 +253,9 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="flex flex-col items-center justify-center mt-16"
+              className="flex flex-col items-center mx-auto justify-center mt-16"
             >
-              <p className="text-base sm:text-lg text-muted-foreground text-center">
+              <p className="text-base md:text-lg text-muted-foreground text-center">
                 No bookmarks found. Add some to get started!
               </p>
               <Button
@@ -256,7 +263,7 @@ export default function Home() {
                 className="mt-4"
                 onClick={() => setIsAddContentModalOpen(true)}
               >
-                <Plus className="w-4 h-4 mr-2" />
+                <Plus className="w-4 h-4 " />
                 Add Bookmark
               </Button>
             </motion.div>
@@ -266,10 +273,11 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3"
+              className="grid gap-4 mx-auto sm:grid-cols-2 lg:grid-cols-3"
             >
               {filteredBookmarks.map((bookmark) => (
                 <motion.div
+                  className="mx-auto"
                   key={bookmark.id}
                   layout
                   initial={{ opacity: 0, y: 20 }}
