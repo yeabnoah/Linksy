@@ -6,6 +6,13 @@ import { ProfileDropdown } from "@/components/profile-dropdown";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import folderInterface from "@/interface/folder_interface";
 import { authClient } from "@/lib/auth-client";
 import useSingleFoldersStore from "@/state/singleFolderStore";
@@ -32,6 +39,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Edit, Trash } from "lucide-react";
 import { ShareModalFolder } from "@/components/share-modal-folder";
+import Link from "next/link";
 
 const FILTERS = [
   { label: "All Types", value: "" },
@@ -211,12 +219,15 @@ export default function Folder({ params }: { params: { id: string } }) {
 
   return (
     <div className="max-w-7xl mx-auto mt-5 px-4 sm:px-6 lg:px-8">
-      <div className="flex  md:space-y-4 flex-row justify-between items-center mb-8">
-        <h1 className="text-2xl font-medium  text-primary flex items-center">
-          <Bookmark className="w-6 h-6 mr-2" />
-          Bookmarks
-        </h1>
-
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+        <Link href="/" className="flex items-center gap-2">
+          <div className="h-6 w-6 md:h-8 md:w-8 rounded-full bg-foreground flex items-center justify-center">
+            <div className="w-3 h-3 md:w-4 md:h-4 bg-background rounded-full" />
+          </div>
+          <span className="font-semibold text-lg md:text-xl text-foreground">
+            Linksy
+          </span>
+        </Link>
         <div className="flex items-center space-x-3">
           <Button
             className="font-medium flex items-center justify-center text-center transition-all duration-200 ease-in-out hover:scale-105"
@@ -231,23 +242,23 @@ export default function Folder({ params }: { params: { id: string } }) {
         </div>
       </div>
 
-      <div className="flex  flex-row justify-between items-center my-5 ">
-        <div className="flex items-center  md:gap-5">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center my-5 gap-4">
+        <div className="flex items-center gap-2 sm:gap-5">
           <Button
             onClick={() => router.back()}
             className="bg-transparent shadow-none hover:bg-gray-100 transition-colors"
           >
             <MoveLeftIcon className="text-black text-xl font-bold" />
           </Button>
-          <h2 className="text-xl sm:text-2xl font-semibold">
+          <h2 className="text-lg md:text-2xl font-normal md:font-semibold">
             {singleFolder?.name || "Loading..."} Folder
           </h2>
         </div>
 
-        <div className="flex items-center space-x-2 ">
+        <div className="flex items-center space-x-2">
           <Button onClick={() => setIsAddContentModalOpen(true)}>
-            <PlusIcon />
-            <span className=" hidden md:block">Add Content</span>
+            <PlusIcon className="mr-2 h-4 w-4" />
+            <span className="hidden sm:inline">Add Content</span>
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -270,28 +281,29 @@ export default function Folder({ params }: { params: { id: string } }) {
         </div>
       </div>
 
-      <div className="flex items-center flex-row max-w-xl justify-start  gap-4 sm:space-y-0 sm:space-x-4 mb-6">
-        <div className="relative flex-grow">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-start gap-4 mb-6">
+        <div className="relative flex-grow w-full sm:w-auto">
           <Input
             type="text"
             placeholder="Search Bookmarks..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
+            className="pl-10 w-full sm:w-64 placeholder:text-sm"
           />
-          <Search className="absolute h-5  w-5 left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <Search className="absolute h-5 w-5 left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
         </div>
-        <select
-          className="md:p-2 py-1 px-2 border rounded"
-          value={selectedFilter}
-          onChange={(e) => setSelectedFilter(e.target.value)}
-        >
-          {FILTERS.map((filter) => (
-            <option key={filter.value} value={filter.value}>
-              {filter.label}
-            </option>
-          ))}
-        </select>
+        <Select value={selectedFilter} onValueChange={setSelectedFilter}>
+          <SelectTrigger className="w-full sm:w-[180px]">
+            <SelectValue placeholder="Select a type" />
+          </SelectTrigger>
+          <SelectContent>
+            {FILTERS.map((filter) => (
+              <SelectItem key={filter.value} value={filter.value}>
+                {filter.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div>{renderContent()}</div>
