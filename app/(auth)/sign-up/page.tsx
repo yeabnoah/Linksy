@@ -71,17 +71,7 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-gray-100 to-gray-200">
-      <div className="hidden lg:block m-5 rounded-xl lg:w-1/2 relative">
-        <Image
-          src="/login.jpg"
-          alt="Sign up background"
-          layout="fill"
-          objectFit="cover"
-          priority
-          className=" rounded-xl"
-        />
-      </div>
+    <div className="flex justify-center min-h-screen bg-gradient-to-br from-gray-100 to-gray-200">
       <div className="w-full lg:w-1/2 flex justify-center items-center  p-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

@@ -49,7 +49,7 @@ export function ProfileDropdown({ user }: ProfileDropdownProps) {
         <DropdownMenuItem
           onClick={async () => {
             await authClient.signOut();
-            router.push("/sign-in");
+            router.push("/landing");
           }}
         >
           Log out
