@@ -15,7 +15,7 @@ import useSingleFoldersStore from "@/state/singleFolderStore";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { AnimatePresence, motion } from "framer-motion";
-import { Bookmark, FolderIcon, Plus, Search, Share2 } from "lucide-react";
+import { FolderIcon, Plus, Search, Share2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
