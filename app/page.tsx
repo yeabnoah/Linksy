@@ -171,9 +171,9 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background max-w-7xl mx-auto">
-      <main className="container mx-auto px-4 py-8">
-        <div className="flex flex-col space-y-4 sm:flex-row sm:justify-between sm:items-center mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-primary flex items-center">
+      <main className="container mx-auto px-4 md:py-8 py-5">
+        <div className="flex space-y-4 justify-between items-center mb-8">
+          <h1 className="md:text-2xl text-xl md:font-bold font-semibold tracking-tight text-primary flex items-center">
             <Bookmark className="w-6 h-6 sm:w-8 sm:h-8 mr-2" />
             Bookmarks
           </h1>
