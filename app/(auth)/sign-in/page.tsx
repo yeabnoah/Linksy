@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { authClient } from "@/lib/auth-client";
-// import { cn } from "@/lib/utils";
 import {
   EyeIcon as EyeClosedIcon,
   EyeIcon,
@@ -23,6 +22,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
@@ -40,9 +40,10 @@ export default function SignIn() {
     setLoading(true);
     try {
       await authClient.signIn.email({ email, password });
+      toast.success("Signed in successfully!");
     } catch (error) {
       console.error("Sign in failed:", error);
-      // Handle error (e.g., show error message)
+      toast.error("Sign in failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -55,24 +56,26 @@ export default function SignIn() {
         provider: "github",
         callbackURL: "/",
       });
+      toast.success("Signed in with GitHub successfully!");
     } catch (error) {
       console.error("GitHub sign in failed:", error);
-      // Handle error (e.g., show error message)
+      toast.error("GitHub sign in failed. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen w-full bg-gradient-to-br from-gray-100 to-gray-200">
+    <div className="flex justify-center bg-emerald-400 items-center min-h-screen w-full bg-gradient-to-br from-gray-100 to-gray-200">
+      <Toaster position="top-center" reverseOrder={false} />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <Card className="w-full max-w-md shadow-lg">
+        <Card className="w-[95%] mx-auto md:w-[22vw] shadow-sm md:shadow-lg">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold text-center">
+            <CardTitle className="md:text-2xl text-xl font-bold text-center">
               Sign In
             </CardTitle>
             <CardDescription className="text-center">
@@ -89,7 +92,7 @@ export default function SignIn() {
                 type="email"
                 placeholder="m@example.com"
                 required
-                className="w-full"
+                className="w-full text-sm placeholder:text-sm"
                 onChange={(e) => setEmail(e.target.value)}
                 value={email}
               />
@@ -103,7 +106,7 @@ export default function SignIn() {
                   id="password"
                   type={show ? "text" : "password"}
                   placeholder="Enter your password"
-                  className="w-full pr-10"
+                  className="w-full text-sm placeholder:text-sm"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />

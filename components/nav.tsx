@@ -10,10 +10,10 @@ export function Nav() {
       <div className="flex h-16 items-center justify-between px-4 max-w-7xl mx-auto">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-full bg-foreground flex items-center justify-center">
-              <div className="w-4 h-4 bg-background rounded-full" />
+            <div className="h-6 w-6 md:h-8 md:w-8 rounded-full bg-foreground flex items-center justify-center">
+              <div className="w-3 h-3 md:w-4 md:h-4 bg-background rounded-full" />
             </div>
-            <span className="font-semibold text-xl text-foreground">
+            <span className="font-semibold text-lg md:text-xl text-foreground">
               Linksy
             </span>
           </Link>
@@ -21,6 +21,7 @@ export function Nav() {
 
         <div className="flex items-center gap-4">
           <Button
+            className=" border-black/10 border"
             onClick={() => {
               router.push("/sign-in");
             }}
