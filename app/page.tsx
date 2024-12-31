@@ -170,9 +170,9 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-background max-w-7xl mx-auto">
+    <div className="min-h-screen bg-background overflow-x-hidden max-w-7xl mx-auto">
       <main className="container mx-auto px-4 md:py-8 py-5">
-        <div className="flex space-y-4 justify-between items-center mb-8">
+        <div className="flex justify-between items-center mb-8">
           <h1 className="md:text-2xl text-xl md:font-bold font-semibold tracking-tight text-primary flex items-center">
             <Bookmark className="w-6 h-6 sm:w-8 sm:h-8 mr-2" />
             Bookmarks

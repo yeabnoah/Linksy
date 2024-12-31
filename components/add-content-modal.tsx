@@ -152,150 +152,152 @@ export function AddContentModal({ isOpen, onClose }: AddContentModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-[95%] rounded-md md:max-w-md ">
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-bold tracking-tight">
+      <DialogContent className="max-w-[95%] sm:max-w-[80%] rounded-md md:max-w-[60%] lg:max-w-[50%] xl:max-w-[40%] h-[90vh] sm:h-auto overflow-hidden flex flex-col">
+        <DialogHeader className="px-6 py-4 sm:px-8 sm:py-6">
+          <DialogTitle className="text-xl sm:text-2xl font-bold tracking-tight">
             Add Content
           </DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={contentType}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.2 }}
-              className="space-y-6"
-            >
-              <div className="space-y-2">
-                <Label htmlFor="type" className="text-sm font-medium">
-                  Content Type
-                </Label>
-                <Select value={contentType} onValueChange={setContentType}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select content type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {contentTypes.map((type) => (
-                      <SelectItem
-                        key={type.value}
-                        value={type.value}
-                        className="font-medium"
+        <div className="flex-grow overflow-y-auto px-6 pb-6 sm:px-8">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={contentType}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.2 }}
+                className="space-y-4 sm:space-y-6"
+              >
+                <div className="space-y-2">
+                  <Label htmlFor="type" className="text-sm font-medium">
+                    Content Type
+                  </Label>
+                  <Select value={contentType} onValueChange={setContentType}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select content type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {contentTypes.map((type) => (
+                        <SelectItem
+                          key={type.value}
+                          value={type.value}
+                          className="font-medium"
+                        >
+                          <div className="flex items-center gap-2">
+                            {type.icon}
+                            {type.label}
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {contentType && (
+                  <>
+                    <div className="space-y-2">
+                      <Label htmlFor="title" className="text-sm font-medium">
+                        Title
+                      </Label>
+                      <Input
+                        id="title"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        placeholder="Enter title"
+                        className="w-full"
+                        required
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="folder" className="text-sm font-medium">
+                        Folder
+                      </Label>
+                      <Select
+                        value={selectedFolder?.toString() || ""}
+                        onValueChange={(value) =>
+                          setSelectedFolder(Number(value))
+                        }
                       >
-                        <div className="flex items-center gap-2">
-                          {type.icon}
-                          {type.label}
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select folder" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {folders.map((folder) => (
+                            <SelectItem
+                              key={folder.id}
+                              value={folder.id.toString()}
+                              className="font-medium"
+                            >
+                              {folder.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-              {contentType && (
+                    <div className="space-y-2">
+                      <Label htmlFor="content" className="text-sm font-medium">
+                        Content
+                      </Label>
+                      <Textarea
+                        id="content"
+                        value={content}
+                        onChange={(e) => setContent(e.target.value)}
+                        placeholder="Enter content"
+                        className="min-h-[100px] resize-none"
+                        required
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="link" className="text-sm font-medium">
+                        Link
+                      </Label>
+                      <Input
+                        id="link"
+                        value={link}
+                        onChange={(e) => setLink(e.target.value)}
+                        placeholder="https://"
+                        type="url"
+                        className="w-full"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="tags" className="text-sm font-medium">
+                        Tags
+                      </Label>
+                      <Input
+                        id="tags"
+                        value={tagsInput}
+                        onChange={(e) => setTagsInput(e.target.value)}
+                        placeholder="Enter tags separated by commas"
+                        className="w-full placeholder:text-sm"
+                      />
+                    </div>
+                  </>
+                )}
+              </motion.div>
+            </AnimatePresence>
+
+            <Button
+              type="submit"
+              className="w-full bg-primary hover:bg-primary/90 transition-colors"
+              disabled={mutation.isPending || !contentType || !selectedFolder}
+            >
+              {mutation.isPending ? (
                 <>
-                  <div className="space-y-2">
-                    <Label htmlFor="title" className="text-sm font-medium">
-                      Title
-                    </Label>
-                    <Input
-                      id="title"
-                      value={title}
-                      onChange={(e) => setTitle(e.target.value)}
-                      placeholder="Enter title"
-                      className="w-full"
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="folder" className="text-sm font-medium">
-                      Folder
-                    </Label>
-                    <Select
-                      value={selectedFolder?.toString() || ""}
-                      onValueChange={(value) =>
-                        setSelectedFolder(Number(value))
-                      }
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select folder" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {folders.map((folder) => (
-                          <SelectItem
-                            key={folder.id}
-                            value={folder.id.toString()}
-                            className="font-medium"
-                          >
-                            {folder.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="content" className="text-sm font-medium">
-                      Content
-                    </Label>
-                    <Textarea
-                      id="content"
-                      value={content}
-                      onChange={(e) => setContent(e.target.value)}
-                      placeholder="Enter content"
-                      className="min-h-[100px] resize-none"
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="link" className="text-sm font-medium">
-                      Link
-                    </Label>
-                    <Input
-                      id="link"
-                      value={link}
-                      onChange={(e) => setLink(e.target.value)}
-                      placeholder="https://"
-                      type="url"
-                      className="w-full"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="tags" className="text-sm font-medium">
-                      Tags
-                    </Label>
-                    <Input
-                      id="tags"
-                      value={tagsInput}
-                      onChange={(e) => setTagsInput(e.target.value)}
-                      placeholder="Enter tags separated by commas"
-                      className="w-full"
-                    />
-                  </div>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Adding...
                 </>
+              ) : (
+                "Add Content"
               )}
-            </motion.div>
-          </AnimatePresence>
-
-          <Button
-            type="submit"
-            className="w-full bg-primary hover:bg-primary/90 transition-colors"
-            disabled={mutation.isPending || !contentType || !selectedFolder}
-          >
-            {mutation.isPending ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Adding...
-              </>
-            ) : (
-              "Add Content"
-            )}
-          </Button>
-        </form>
+            </Button>
+          </form>
+        </div>
       </DialogContent>
       <Toaster />
     </Dialog>
