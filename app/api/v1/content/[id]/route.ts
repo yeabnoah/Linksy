@@ -1,5 +1,3 @@
-// /app/api/v1/content/[id].ts
-
 import prisma from "@/lib/prisma";
 import getUserSession from "@/util/getUserData";
 import { NextRequest, NextResponse } from "next/server";
