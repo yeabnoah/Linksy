@@ -156,7 +156,7 @@ export default function Home() {
             router.push(`/folder/${each.id}`);
             setSingleFolder(each);
           }}
-          className=" w-28 h-28 w- md:w-64 md:h-40 bg-white border-primary/15 shadow-sm border-[0.5px] rounded-lg flex items-center justify-center mb-2"
+          className=" w-full h-28 w- md:w-64 md:h-40 bg-white border-primary/15 shadow-sm border-[0.5px] rounded-lg flex items-center justify-center mb-2"
         >
           <FolderIcon
             className="h-16 w-16 sm:h-20 sm:w-20 text-primary/30"
