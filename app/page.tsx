@@ -50,7 +50,7 @@ const FILTERS = [
   { label: "Youtube", value: "youtube" },
   { label: "Reddit", value: "reddit" },
   { label: "Discord", value: "discord" },
-  { label: "Pinterest", value: "Pinterest" },
+  { label: "Pinterest", value: "pinterest" },
   { label: "LinkedIn", value: "linkedin" },
   { label: "Website", value: "website" },
 ];

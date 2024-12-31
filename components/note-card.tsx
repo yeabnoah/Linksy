@@ -22,9 +22,15 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { InstagramEmbed, XEmbed, YouTubeEmbed } from "react-social-media-embed";
-import DiscordEmbed from "./discordWidget";
-import Linkedin from "./linkedin";
+import {
+  FacebookEmbed,
+  InstagramEmbed,
+  LinkedInEmbed,
+  PlaceholderEmbed,
+  TikTokEmbed,
+  XEmbed,
+  YouTubeEmbed,
+} from "react-social-media-embed";
 import RedditEmbed from "./redditEmbed";
 import TelegramPost from "./telegramEmbed";
 
@@ -137,8 +143,30 @@ NoteCardProps) {
             )}
             {type === "reddit" && <RedditEmbed postUrl={link} />}
 
-            {type === "discord" && <DiscordEmbed link={link} />}
-            {type === "linkedin" && <Linkedin link={link} />}
+            {type === "discord" && (
+              <PlaceholderEmbed
+                url={link}
+                imageUrl="/Discord.avif"
+                spinnerDisabled={true}
+                allowJavaScriptUrls={false}
+              />
+            )}
+            {type === "linkedin" && (
+              <LinkedInEmbed
+                url="https://www.linkedin.com/embed/feed/update/urn:li:share:6898694772484112384"
+                postUrl={link}
+              />
+            )}
+            {type === "pinterest" && (
+              <PlaceholderEmbed
+                url={link}
+                imageUrl="/pinterest.png"
+                spinnerDisabled={true}
+                allowJavaScriptUrls={false}
+              />
+            )}
+            {type === "tiktok" && <TikTokEmbed url={link} />}
+            {type === "facebook" && <FacebookEmbed url={link} />}
           </motion.div>
           <AnimatePresence>
             {isHovered && (

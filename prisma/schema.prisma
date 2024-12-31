@@ -28,6 +28,7 @@ enum type {
   reddit
   slack
   pinterest
+  website
 }
 
 

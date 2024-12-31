@@ -1,22 +1,27 @@
 import React from "react";
 
-interface DiscordEmbedProps {
+interface DiscordChannelProps {
   link: string;
 }
 
-const DiscordEmbed: React.FC<DiscordEmbedProps> = ({ link }) => {
+const DiscordChannel: React.FC<DiscordChannelProps> = ({ link }) => {
+  const isValidDiscordLink = link.startsWith("https://discord.com/channels/");
+
+  if (!isValidDiscordLink) {
+    return <p>Invalid Discord link. Please provide a valid channel link.</p>;
+  }
+
   return (
-    <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-      <iframe
-        src={link}
-        width="350"
-        height="500"
-        frameBorder="0"
-        sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
-        title="Discord Server Widget"
-      ></iframe>
-    </div>
+    <iframe
+      src={link}
+      width="800"
+      height="600"
+      allowTransparency={true}
+      frameBorder="0"
+      sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+      title="Discord Channel"
+    ></iframe>
   );
 };
 
-export default DiscordEmbed;
+export default DiscordChannel;
