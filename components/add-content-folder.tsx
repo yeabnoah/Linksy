@@ -138,7 +138,7 @@ export function AddContentFolderModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="md:max-w-xl max-w-[95%] rounded-md">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold tracking-tight">
             Add Content

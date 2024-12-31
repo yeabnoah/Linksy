@@ -34,7 +34,7 @@ interface ApiResponse<T> {
 
 const fetchPosts = async (id: string) => {
   const response = await axios.get<ApiResponse<Post[]>>(
-    `/api/v1/brain/share/${id}`
+    `/api/v1/bookmark/share/${id}`
   );
   return response.data.data;
 };

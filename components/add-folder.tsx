@@ -69,7 +69,7 @@ export function AddFolderModal({ isOpen, onClose }: AddContentModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="md:max-w-md max-w-[95%] rounded-md">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold tracking-tight">
             📁 Add Folder

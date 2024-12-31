@@ -27,7 +27,7 @@ export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
       if (isOpen) {
         setIsLoading(true);
         try {
-          const response = await axios.get("/api/v1/brain/share", {
+          const response = await axios.get("/api/v1/bookmark/share", {
             withCredentials: true,
           });
           const data = response.data as dataComing;
@@ -50,7 +50,7 @@ export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
   const handleStopSharing = async () => {
     try {
       await axios.post(
-        "/api/v1/brain/share",
+        "/api/v1/bookmark/share",
         { shareApproved: false },
         { withCredentials: true }
       );
@@ -66,7 +66,7 @@ export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
   const handleStartSharing = async () => {
     try {
       const response = await axios.post(
-        "/api/v1/brain/share",
+        "/api/v1/bookmark/share",
         { shareApproved: true },
         { withCredentials: true }
       );
@@ -94,13 +94,13 @@ export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-xl p-0 overflow-hidden">
+      <DialogContent className=" max-w-[98%] rounded-md  md:max-w-xl p-0 overflow-hidden">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.3 }}
-          className="p-6 space-y-6"
+          className="md:p-6 px-3 py-5 space-y-6"
         >
           <div className="flex justify-between items-start gap-4">
             <div className="space-y-2">

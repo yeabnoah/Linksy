@@ -17,9 +17,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="light">
+    <html lang="en" className="dark">
       <QueryProviderComponent>
-        <body className={`${spaceGrotesk.className} `}>
+        <body
+          className={`${spaceGrotesk.className} dark:bg-primary dark:text-white`}
+        >
           <ThemeProvider attribute="class" defaultTheme="" enableSystem>
             {children}{" "}
           </ThemeProvider>

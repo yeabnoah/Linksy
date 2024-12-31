@@ -5,13 +5,21 @@ import { NoteCard } from "@/components/note-card";
 import { ProfileDropdown } from "@/components/profile-dropdown";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import folderInterface from "@/interface/folder_interface";
 import { authClient } from "@/lib/auth-client";
 import useSingleFoldersStore from "@/state/singleFolderStore";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { motion } from "framer-motion";
-import { Bookmark, Loader, MoveLeftIcon, Share2Icon } from "lucide-react";
+import {
+  Bookmark,
+  Loader,
+  MoveLeftIcon,
+  Share2Icon,
+  Search,
+  PlusIcon,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
@@ -21,7 +29,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@radix-ui/react-dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Edit, Trash } from "lucide-react";
 import { ShareModalFolder } from "@/components/share-modal-folder";
 
@@ -178,7 +186,7 @@ export default function Folder({ params }: { params: { id: string } }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="bookmarks-list grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+        className="bookmarks-list grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
       >
         {filteredContent.map((bookmark) => (
           <NoteCard
@@ -195,20 +203,17 @@ export default function Folder({ params }: { params: { id: string } }) {
     );
   };
 
-  // Debounce function for search query
   useEffect(() => {
-    const timer = setTimeout(() => {
-      // Execute search only when typing stops for 500ms
-    }, 500);
+    const timer = setTimeout(() => {}, 500);
 
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
   return (
     <div className="max-w-7xl mx-auto mt-5 px-4 sm:px-6 lg:px-8">
-      <div className="flex flex-col space-y-4 sm:flex-row sm:justify-between sm:items-center mb-8">
-        <h1 className="text-3xl font-bold tracking-tight text-primary flex items-center">
-          <Bookmark className="w-8 h-8 mr-2" />
+      <div className="flex  md:space-y-4 flex-row justify-between items-center mb-8">
+        <h1 className="text-2xl font-medium  text-primary flex items-center">
+          <Bookmark className="w-6 h-6 mr-2" />
           Bookmarks
         </h1>
 
@@ -219,52 +224,44 @@ export default function Folder({ params }: { params: { id: string } }) {
               setIsShareModalOpen(!isShareModalOpen);
             }}
           >
-            <Share2Icon />
-            <span className="hidden sm:inline">Share Modal</span>
+            <Share2Icon className="w-4 h-4 mr-2" />
+            <span className="hidden sm:inline">Share</span>
           </Button>
           <ProfileDropdown user={user} />
         </div>
       </div>
 
-      <div className="flex flex-col sm:flex-row justify-between items-center my-5 gap-4">
-        <div className="flex items-center gap-5">
+      <div className="flex  flex-row justify-between items-center my-5 ">
+        <div className="flex items-center  md:gap-5">
           <Button
             onClick={() => router.back()}
             className="bg-transparent shadow-none hover:bg-gray-100 transition-colors"
           >
             <MoveLeftIcon className="text-black text-xl font-bold" />
           </Button>
-          <h2 className="text-2xl font-semibold">
+          <h2 className="text-xl sm:text-2xl font-semibold">
             {singleFolder?.name || "Loading..."} Folder
           </h2>
         </div>
 
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 ">
           <Button onClick={() => setIsAddContentModalOpen(true)}>
-            Add Content
+            <PlusIcon />
+            <span className=" hidden md:block">Add Content</span>
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button size="icon" className="border-black/20">
+              <Button size="icon" variant="outline">
                 <MoreHorizontal className="h-4 w-4" />
                 <span className="sr-only">Open menu</span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              className="outline-none hover:outline-none hover:cursor-pointer bg-white py-2 px-3 border border-black/10 rounded-l-md rounded-br-md mr-4 mt-2"
-            >
-              <DropdownMenuItem
-                onClick={() => setIsEditModalOpen(true)}
-                className="flex gap-2 items-center hover:bg-slate-100 p-2 rounded-md outline-none hover:outline-none hover:cursor-pointer"
-              >
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => setIsEditModalOpen(true)}>
                 <Edit className="mr-2 h-4 w-4" />
                 <span>Edit Folder</span>
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setIsDeleteModalOpen(true)}
-                className="text-red-600 flex items-center gap-2 hover:bg-slate-100 rounded-md p-2 outline-none hover:outline-none hover:cursor-pointer"
-              >
+              <DropdownMenuItem onClick={() => setIsDeleteModalOpen(true)}>
                 <Trash className="mr-2 h-4 w-4" />
                 <span>Delete Folder</span>
               </DropdownMenuItem>
@@ -273,23 +270,19 @@ export default function Folder({ params }: { params: { id: string } }) {
         </div>
       </div>
 
-      {/* Search and Filter Section */}
-      <div className="flex justify-start space-x-4 mb-6">
-        <input
-          type="text"
-          placeholder="Search Bookmarks..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="p-2 border rounded"
-        />
-        <Button
-          onClick={() => setSearchQuery(searchQuery)}
-          className="p-2 bg-blue-500 text-white rounded"
-        >
-          Search
-        </Button>
+      <div className="flex items-center flex-row max-w-xl justify-start  gap-4 sm:space-y-0 sm:space-x-4 mb-6">
+        <div className="relative flex-grow">
+          <Input
+            type="text"
+            placeholder="Search Bookmarks..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10"
+          />
+          <Search className="absolute h-5  w-5 left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+        </div>
         <select
-          className="p-2 border rounded"
+          className="md:p-2 py-1 px-2 border rounded"
           value={selectedFilter}
           onChange={(e) => setSelectedFilter(e.target.value)}
         >
@@ -310,7 +303,7 @@ export default function Folder({ params }: { params: { id: string } }) {
 
       <Dialog.Root open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
         <Dialog.Portal>
-          <Dialog.Overlay className="fixed inset-0 bg-black/50" />
+          <Dialog.Overlay className="fixed inset-0 bg-black/50 " />
           <Dialog.Content className="fixed bg-white p-6 shadow-lg rounded-lg top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md">
             <Dialog.Title className="text-xl font-semibold mb-4">
               Edit Folder
@@ -318,8 +311,8 @@ export default function Folder({ params }: { params: { id: string } }) {
             <Dialog.Description className="text-gray-500 mb-4">
               Enter a new name for the folder.
             </Dialog.Description>
-            <input
-              className="border p-2 rounded w-full mb-4"
+            <Input
+              className="mb-4"
               placeholder="Folder Name"
               value={newFolderName}
               onChange={(e) => setNewFolderName(e.target.value)}
@@ -357,7 +350,7 @@ export default function Folder({ params }: { params: { id: string } }) {
       </Dialog.Root>
 
       <ShareModalFolder
-        itemCount={10}
+        itemCount={filteredContent.length}
         isOpen={isShareModalOpen}
         onClose={() => setIsShareModalOpen(false)}
       />

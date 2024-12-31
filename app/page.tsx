@@ -155,10 +155,10 @@ export default function Home() {
             router.push(`/folder/${each.id}`);
             setSingleFolder(each);
           }}
-          className="w-full h-32 sm:w-64 sm:h-40 bg-white border-primary/15 shadow-sm border-[0.5px] rounded-lg flex items-center justify-center mb-2"
+          className="w-full h-32 sm:w-64 sm:h-40 bg-white dark:bg-gray-500 border-primary/15 shadow-sm border-[0.5px] rounded-lg flex items-center justify-center mb-2"
         >
           <FolderIcon
-            className="h-16 w-16 sm:h-20 sm:w-20 text-primary/30"
+            className="h-16 w-16 sm:h-20 sm:w-20 text-primary/30 "
             fill="rgb(9 9 11 / 0.7)"
           />
         </button>
@@ -172,7 +172,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background max-w-7xl mx-auto">
       <main className="container mx-auto px-4 py-8">
-        <div className="flex flex-col space-y-4 sm:flex-row sm:justify-between sm:items-center mb-8">
+        <div className="flex md:space-y-4  justify-between sm:items-center mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-primary flex items-center">
             <Bookmark className="w-6 h-6 sm:w-8 sm:h-8 mr-2" />
             Bookmarks
