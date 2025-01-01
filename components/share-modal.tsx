@@ -100,7 +100,7 @@ export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.3 }}
-          className="p-4 sm:p-6 space-y-4 sm:space-y-6 w-[90vw]"
+          className="p-4 sm:p-6 space-y-4 sm:space-y-6"
         >
           <div className="flex flex-col md:flex-row justify-between items-start gap-4">
             <div className="space-y-2 w-full sm:w-auto">
@@ -125,14 +125,14 @@ export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
                 transition={{ duration: 0.3 }}
                 className="space-y-4"
               >
-                <div className="flex items-center w-[90%] text-wrap space-x-2 rounded-lg bg-muted p-3 text-sm">
+                <div className="flex items-center text-wrap space-x-2 rounded-lg bg-muted p-3 text-sm">
                   <Share2 className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
                   <span className="text-xs text-wrap md:text-sm">{link}</span>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3">
                   <Button
                     variant="destructive"
-                    className="flex-1 font-medium w-fit"
+                    className="flex-1 font-medium w-full"
                     onClick={handleStopSharing}
                   >
                     <Lock className="w-4 h-4 mr-2" />
@@ -140,7 +140,7 @@ export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
                   </Button>
                   <Button
                     variant="secondary"
-                    className="flex-1 font-medium w-fit"
+                    className="flex-1 font-medium w-full"
                     onClick={handleCopyLink}
                   >
                     <Copy className="w-4 h-4 mr-2" />
