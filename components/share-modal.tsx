@@ -94,7 +94,7 @@ export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-[95%] w-full rounded-md sm:max-w-md md:max-w-xl p-0 overflow-hidden">
+      <DialogContent className=" max-w-[95%]  rounded-md sm:max-w-md md:max-w-xl p-0 overflow-hidden">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -127,14 +127,14 @@ export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
               >
                 <div className="flex items-center space-x-2 rounded-lg bg-muted p-3 text-sm">
                   <Share2 className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
-                  <span className="flex-1 truncate text-xs sm:text-sm">
+                  <span className="flex-1 truncate text-xs text-wrap sm:text-sm">
                     {link}
                   </span>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3">
                   <Button
                     variant="destructive"
-                    className="flex-1 font-medium"
+                    className="flex-1 font-medium w-full"
                     onClick={handleStopSharing}
                   >
                     <Lock className="w-4 h-4 mr-2" />
@@ -142,7 +142,7 @@ export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
                   </Button>
                   <Button
                     variant="secondary"
-                    className="flex-1 font-medium"
+                    className="flex-1 font-medium w-full"
                     onClick={handleCopyLink}
                   >
                     <Copy className="w-4 h-4 mr-2" />

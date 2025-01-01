@@ -224,8 +224,8 @@ export default function Folder({ params }: { params: { id: string } }) {
   }, [searchQuery]);
 
   return (
-    <div className="max-w-7xl mx-auto mt-5 px-4 sm:px-6 lg:px-8">
-      <div className="flex flex-row justify-between items-start sm:items-center mb-8 gap-4">
+    <div className="max-w-7xl mx-auto px-4 md:py-8 py-5 sm:px-6 ">
+      <div className="flex flex-row justify-between items-center mb-8 gap-4">
         <Link href="/" className="flex items-center gap-2">
           <div className="h-6 w-6 md:h-8 md:w-8 rounded-full bg-foreground flex items-center justify-center">
             <div className="w-3 h-3 md:w-4 md:h-4 bg-background rounded-full" />

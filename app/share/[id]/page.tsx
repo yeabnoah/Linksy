@@ -1,12 +1,12 @@
 "use client";
 
 import { NoteCardTrash } from "@/components/note-card-public";
-import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { Bookmark, Search } from "lucide-react";
-import Link from "next/link";
 import { Spinner } from "@/components/spinner";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { Search } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
 
 interface Post {
   id: number;
@@ -109,12 +109,13 @@ const ShareComponent = ({ params }: { params: { id: string } }) => {
   return (
     <div className="mx-auto max-w-7xl min-h-screen bg-white px-4 sm:px-6 lg:px-8">
       <div className="flex flex-col sm:flex-row items-center justify-between py-6">
-        <Link
-          href="#"
-          className="text-2xl font-medium tracking-tight text-primary flex items-center mb-4 sm:mb-0"
-        >
-          <Bookmark className="w-7 h-6 mr-2" />
-          Bookmarks
+        <Link href="/" className="flex items-center gap-2">
+          <div className="h-6 w-6 md:h-8 md:w-8 rounded-full bg-foreground flex items-center justify-center">
+            <div className="w-3 h-3 md:w-4 md:h-4 bg-background rounded-full" />
+          </div>
+          <span className="font-semibold text-lg md:text-xl text-foreground">
+            Linksy
+          </span>
         </Link>
         {user && (
           <div className="flex items-center gap-2">
