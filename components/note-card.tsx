@@ -125,7 +125,9 @@ NoteCardProps) {
             {folder}
           </div> */}
           <motion.div
-            className="flex justify-center border rounded-md bg-background overflow-hidden"
+            className={`flex justify-center border rounded-md bg-background overflow-hidden ${
+              isHovered ? "md:h-[12rem]" : "h-[8rem]"
+            }`}
             animate={{ height: isHovered ? "12rem" : "8rem" }}
             transition={{ duration: 0.3 }}
           >
@@ -142,7 +144,6 @@ NoteCardProps) {
               <TelegramPost type="telegram" link={link} />
             )}
             {type === "reddit" && <RedditEmbed postUrl={link} />}
-
             {type === "discord" && (
               <PlaceholderEmbed
                 url={link}

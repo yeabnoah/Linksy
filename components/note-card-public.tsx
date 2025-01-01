@@ -43,23 +43,6 @@ export function NoteCardTrash({
   description,
 }: NoteCardProps) {
   const [isHovered, setIsHovered] = useState(false);
-
-  // const deleteNoteMutation = useMutation({
-  //   mutationFn: async (id: number) => {
-  //     const response = await axios.delete(`/api/v1/content/${id}`, {
-  //       withCredentials: true,
-  //     });
-  //     return response.data;
-  //   },
-  //   onSuccess: () => {
-  //     toast.success("Note deleted successfully!");
-  //     queryClient.invalidateQueries();
-  //   },
-  //   onError: (error: Error) => {
-  //     toast.error(error.message || "Failed to delete the note.");
-  //   },
-  // });
-
   const TypeIcon = typeIcons[type as keyof typeof typeIcons];
 
   return (
@@ -68,6 +51,7 @@ export function NoteCardTrash({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
+      className="md:hoverable"
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
     >
@@ -82,7 +66,9 @@ export function NoteCardTrash({
         </CardHeader>
         <CardContent className="p-5 space-y-4">
           <motion.div
-            className="flex justify-center border rounded-md bg-background overflow-hidden"
+            className={`flex justify-center border rounded-md bg-background overflow-hidden ${
+              isHovered ? "md:h-[12rem]" : "h-[8rem]"
+            }`}
             animate={{ height: isHovered ? "12rem" : "8rem" }}
             transition={{ duration: 0.3 }}
           >
@@ -100,7 +86,7 @@ export function NoteCardTrash({
             )}
           </motion.div>
           <AnimatePresence>
-            {isHovered && (
+            {(isHovered || !isHovered) && (
               <motion.p
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
