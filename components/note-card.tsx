@@ -90,8 +90,10 @@ NoteCardProps) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
+      // Adjust hover behavior for mobile (onClick or touch interaction)
+      onMouseEnter={() => window.innerWidth > 768 && setIsHovered(true)}
+      onMouseLeave={() => window.innerWidth > 768 && setIsHovered(false)}
+      onClick={() => window.innerWidth <= 768 && setIsHovered(!isHovered)}
     >
       <Card className="overflow-hidden h-fit w-[90vw] mx-auto md:w-[24vw] max-w-sm shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl">
         <CardHeader className="flex items-center flex-row justify-between space-y-0 pb-2 bg-primary/5">
@@ -120,10 +122,6 @@ NoteCardProps) {
           </TooltipProvider>
         </CardHeader>
         <CardContent className="p-5 space-y-4">
-          {/* <div className=" flex gap-2 items-center">
-            <FolderIcon className=" h-4 w-4" />
-            {folder}
-          </div> */}
           <motion.div
             className={`flex justify-center border rounded-md bg-background overflow-hidden ${
               isHovered ? "md:h-[12rem]" : "h-[8rem]"
