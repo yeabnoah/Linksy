@@ -100,7 +100,7 @@ export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.3 }}
-          className="p-4 sm:p-6 space-y-4 md:space-y-6"
+          className="p-4 sm:p-6 space-y-4 md:space-y-6  w-[90vw]"
         >
           <div className="flex flex-col md:flex-row justify-between items-start gap-4">
             <div className="space-y-2 w-full sm:w-auto">
