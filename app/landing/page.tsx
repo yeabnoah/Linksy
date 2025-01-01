@@ -44,11 +44,10 @@ export default function Homer() {
                 href="https://github.com/yeabnoah/linksy"
                 target="_blank"
                 rel="noopener noreferrer"
+                className=" flex items-center gap-2 p-3 border rounded-xl border-black/40"
               >
-                {starCount}
-                <Button size="lg" className="font-medium">
-                  Stars on GitHub
-                </Button>
+                <span>{starCount}</span>
+                <span>Stars on GitHub</span>
               </a>
             )}
           </div>
