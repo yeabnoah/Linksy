@@ -94,17 +94,17 @@ export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className=" max-w-[98%] rounded-md  md:max-w-xl p-0 overflow-hidden">
+      <DialogContent className="max-w-[95%] w-full rounded-md sm:max-w-md md:max-w-xl p-0 overflow-hidden">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.3 }}
-          className="md:p-6 px-3 py-5 space-y-6"
+          className="p-4 sm:p-6 space-y-4 sm:space-y-6"
         >
-          <div className="flex justify-between items-start gap-4">
-            <div className="space-y-2">
-              <h2 className="text-2xl font-bold tracking-tight">
+          <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+            <div className="space-y-2 w-full sm:w-auto">
+              <h2 className="text-xl sm:text-2xl font-bold tracking-tight">
                 Share Your Bookmark List
               </h2>
               <p className="text-sm text-muted-foreground leading-relaxed">
@@ -126,10 +126,12 @@ export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
                 className="space-y-4"
               >
                 <div className="flex items-center space-x-2 rounded-lg bg-muted p-3 text-sm">
-                  <Share2 className="h-4 w-4 text-muted-foreground" />
-                  <span className="flex-1 truncate">{link}</span>
+                  <Share2 className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
+                  <span className="flex-1 truncate text-xs sm:text-sm">
+                    {link}
+                  </span>
                 </div>
-                <div className="flex gap-3">
+                <div className="flex flex-col sm:flex-row gap-3">
                   <Button
                     variant="destructive"
                     className="flex-1 font-medium"

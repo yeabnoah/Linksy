@@ -44,7 +44,7 @@ const BUTTONS = [
 ];
 
 const FILTERS = [
-  { label: "All Types", value: "" },
+  { label: "All_Types", value: "" },
   { label: "Telegram", value: "telegram" },
   { label: "Twitter", value: "twitter" },
   { label: "Instagram", value: "instagram" },
@@ -123,14 +123,14 @@ export default function Home() {
     ));
 
   const renderFilters = () => (
-    <div className="flex flex-wrap gap-2 mb-4">
+    <div className="flex md:flex-wrap overflow-x-scroll gap-2 mb-4 py-2 my-2">
       {FILTERS.map(({ label, value }) => (
         <motion.button
           key={value}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => filterByType(value)}
-          className={`text-sm md:text-base transition-all duration-200 ease-in-out px-3 py-1 rounded-full ${
+          className={`text-sm md:text-base transition-all duration-200 ease-in-out text-center p-1 rounded-full ${
             currentFilter === value
               ? "font-bold text-primary bg-primary/10"
               : "text-muted-foreground hover:text-primary hover:bg-primary/5"
@@ -300,7 +300,6 @@ export default function Home() {
         </AnimatePresence>
       </main>
 
-      {/* Modals */}
       <AddContentModal
         isOpen={isAddContentModalOpen}
         onClose={() => setIsAddContentModalOpen(false)}
@@ -311,7 +310,7 @@ export default function Home() {
       />
       <ShareModal
         isOpen={isShareModalOpen}
-        itemCount={10}
+        itemCount={filteredBookmarks.length}
         onClose={() => setIsShareModalOpen(false)}
       />
     </div>

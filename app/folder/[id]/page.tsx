@@ -3,8 +3,15 @@
 import { AddContentFolderModal } from "@/components/add-content-folder";
 import { NoteCard } from "@/components/note-card";
 import { ProfileDropdown } from "@/components/profile-dropdown";
+import { ShareModalFolder } from "@/components/share-modal-folder";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -16,30 +23,24 @@ import {
 import folderInterface from "@/interface/folder_interface";
 import { authClient } from "@/lib/auth-client";
 import useSingleFoldersStore from "@/state/singleFolderStore";
+import * as Dialog from "@radix-ui/react-dialog";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { motion } from "framer-motion";
 import {
-  Bookmark,
+  Edit,
   Loader,
+  MoreHorizontal,
   MoveLeftIcon,
-  Share2Icon,
-  Search,
   PlusIcon,
+  Search,
+  Share2Icon,
+  Trash,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import * as Dialog from "@radix-ui/react-dialog";
-import { toast } from "react-hot-toast";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Edit, Trash } from "lucide-react";
-import { ShareModalFolder } from "@/components/share-modal-folder";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
 
 const FILTERS = [
   { label: "All Types", value: "" },

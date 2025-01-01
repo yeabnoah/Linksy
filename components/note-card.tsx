@@ -93,7 +93,7 @@ NoteCardProps) {
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
     >
-      <Card className="overflow-hidden h-fit w-full max-w-sm shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl">
+      <Card className="overflow-hidden h-fit w-[90vw] md:w-fit max-w-sm shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl">
         <CardHeader className="flex items-center flex-row justify-between space-y-0 pb-2 bg-primary/5">
           <div className="flex items-center gap-3">
             {TypeIcon && <TypeIcon className="text-primary w-5 h-5" />}
