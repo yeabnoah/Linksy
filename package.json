@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
+    "@loglib/tracker": "^0.8.0",
     "@prisma/client": "6.1.0",
     "@radix-ui/react-avatar": "^1.1.2",
     "@radix-ui/react-checkbox": "^1.1.3",

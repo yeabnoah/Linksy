@@ -3,6 +3,7 @@ import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import QueryProviderComponent from "@/hooks/QueryProvider";
 import { ThemeProvider } from "@/hooks/theme-provider";
+import Loglib from "@loglib/tracker/react";
 
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"] });
 
@@ -22,6 +23,11 @@ export default function RootLayout({
         <body className={`${spaceGrotesk.className} light bg-white`}>
           <ThemeProvider attribute="class" defaultTheme="" enableSystem>
             {children}{" "}
+            <Loglib
+              config={{
+                id: "linksy-three_vercel",
+              }}
+            />
           </ThemeProvider>
         </body>
       </QueryProviderComponent>
