@@ -1,36 +1,104 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Linksy - Open Source Bookmark/Link Manager
+
+Linksy is an open-source bookmark and link manager that enables users to organize and manage their social media posts and other links. It allows for the creation of folders to store links, the ability to share collections with others, and a search feature to quickly find links. With its seamless integration with various social media platforms, Linksy provides an easy and efficient way to manage links.
+
+## Features
+
+- Create folders and organize links from different social media platforms
+- Search through your links with ease
+- Share your link collections with others
+- Embed social media posts from platforms like Twitter, Instagram, and more
+- Easy-to-use UI with animations for an enhanced user experience
+
+## Tech Stack
+
+This project uses the following technologies:
+
+- **Next.js**: Framework for both frontend and backend
+- **TypeScript**: Programming language
+- **Better Auth**: Authentication library
+- **Prisma**: ORM for database interactions
+- **PostgreSQL**: Database management system
+- **ShadCN**: UI component library
+- **Framer Motion**: Animation library for smooth transitions
+- **React Hot Toast**: Toast notifications library
+- **Zod**: Schema and validation library
+- **Zustand**: State management library
+- **TanStack Query**: Data fetching and caching library
+- **Axios**: HTTP client for making requests
+- **Tailwind CSS**: Utility-first CSS framework
+- **LogLib**: Analytics tool for monitoring
+- **Ludide React**: Icon collection
+- **React Icons**: Icon collection
+- **React Social Media Embed**: Embedding library for social media posts
+- **Use-Debounce**: Debouncing library for improved performance
 
 ## Getting Started
 
-First, run the development server:
+To get started with the project locally, follow these steps:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Prerequisites
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Node.js
+- PostgreSQL database
+- GitHub credentials for OAuth authentication
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Setup
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Fork the repository** to your GitHub account.
+2. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-username/linksy.git
+   cd linksy
+   ```
 
-## Learn More
+## Install dependencies
 
-To learn more about Next.js, take a look at the following resources:
+`npm install`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Set up environment variables: Create a .env file at the root of the project and add the following variables:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+`DATABASE_URL=your_postgresql_database_url
+GITHUB_CLIENT_ID=your_github_oauth_client_id
+GITHUB_CLIENT_SECRET=your_github_oauth_client_secret
+BETTER_AUTH_SECRET=your_better_auth_secret
+BETTER_AUTH_URL=your_better_auth_url`
 
-## Deploy on Vercel
+## Configure authentication client
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+    - Navigate to /lib/auth-client.ts
+    - Change the baseURL to point to your local server (e.g., http://localhost:3000/).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Run the development server
+
+    `npm run dev`
+
+    - The application will be available at http://localhost:3000.
+
+## How to Contribute
+
+    - Fork the repository to your GitHub account.
+    - Clone your fork locally:
+
+`git clone https://github.com/your-username/linksy.git`
+
+### Create a new branch for your feature or bug fix
+
+`git checkout -b feature/your-feature-name`
+
+### Make your changes and commit them
+
+`git add .
+git commit -m "Add your commit message"`
+
+### Push your changes to your fork
+
+    - `git push origin feature/your-feature-name`
+
+### Create a pull request on GitHub from your branch to the main repository.
+
+## License
+
+- This project is licensed under the MIT License - see the LICENSE file for details.
+
+- Make sure to replace the placeholders like `your-username` and other environment variable values with the actual details. Let me know if you need anything else!
