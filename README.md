@@ -59,9 +59,13 @@ To get started with the project locally, follow these steps:
 - Set up environment variables: Create a .env file at the root of the project and add the following variables:
 
 DATABASE_URL=your_postgresql_database_url
+
 GITHUB_CLIENT_ID=your_github_oauth_client_id
+
 GITHUB_CLIENT_SECRET=your_github_oauth_client_secret
+
 BETTER_AUTH_SECRET=your_better_auth_secret
+
 BETTER_AUTH_URL=your_better_auth_url
 
 ## Configure authentication client
@@ -89,6 +93,7 @@ BETTER_AUTH_URL=your_better_auth_url
 ### Make your changes and commit them
 
 git add .
+
 git commit -m "Add your commit message"
 
 ### Push your changes to your fork
