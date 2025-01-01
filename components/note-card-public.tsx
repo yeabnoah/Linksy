@@ -15,7 +15,6 @@ import {
   TwitterIcon,
   YoutubeIcon,
 } from "lucide-react";
-import { useState } from "react";
 import { InstagramEmbed, XEmbed, YouTubeEmbed } from "react-social-media-embed";
 import TelegramPost from "./telegramEmbed";
 
@@ -42,7 +41,6 @@ export function NoteCardTrash({
   type,
   description,
 }: NoteCardProps) {
-  const [isHovered, setIsHovered] = useState(false);
   const TypeIcon = typeIcons[type as keyof typeof typeIcons];
 
   return (
@@ -51,11 +49,8 @@ export function NoteCardTrash({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
-      className="md:hoverable"
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
     >
-      <Card className="overflow-hidden h-fit w-full max-w-sm shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl">
+      <Card className="overflow-hidden h-fit w-full max-w-sm shadow-lg transition-all duration-300 ease-in-out">
         <CardHeader className="flex items-center flex-row justify-between space-y-0 pb-2 bg-primary/5">
           <div className="flex items-center gap-3">
             {TypeIcon && <TypeIcon className="text-primary w-5 h-5" />}
@@ -65,13 +60,7 @@ export function NoteCardTrash({
           </div>
         </CardHeader>
         <CardContent className="p-5 space-y-4">
-          <motion.div
-            className={`flex justify-center border rounded-md bg-background overflow-hidden ${
-              isHovered ? "md:h-[12rem]" : "h-[8rem]"
-            }`}
-            animate={{ height: isHovered ? "12rem" : "8rem" }}
-            transition={{ duration: 0.3 }}
-          >
+          <div className="flex justify-center border rounded-md bg-background overflow-hidden h-[8rem]">
             {type === "twitter" && (
               <XEmbed url={link} className="w-full rounded-md" />
             )}
@@ -84,26 +73,24 @@ export function NoteCardTrash({
             {type === "telegram" && (
               <TelegramPost type="telegram" link={link} />
             )}
-          </motion.div>
+          </div>
           <AnimatePresence>
-            {(isHovered || !isHovered) && (
-              <motion.p
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.2 }}
-                className="text-sm leading-relaxed text-muted-foreground"
-              >
-                {description}
-              </motion.p>
-            )}
+            <motion.p
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.2 }}
+              className="text-sm leading-relaxed text-muted-foreground"
+            >
+              {description}
+            </motion.p>
           </AnimatePresence>
           <div className="flex items-center justify-between">
             <div className="flex flex-wrap gap-2">
               {tags.map((tag) => (
                 <span
                   key={tag}
-                  className="inline-flex items-center text-xs font-medium text-primary bg-primary/10 px-2.5 py-0.5 rounded-full transition-colors duration-200 hover:bg-primary/20"
+                  className="inline-flex items-center text-xs font-medium text-primary bg-primary/10 px-2.5 py-0.5 rounded-full"
                 >
                   #{tag}
                 </span>

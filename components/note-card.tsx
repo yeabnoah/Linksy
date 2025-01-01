@@ -41,7 +41,6 @@ interface NoteCardProps {
   type: string;
   description: string;
   link: string;
-  // folder: string;
 }
 
 const typeIcons = {
@@ -58,8 +57,7 @@ export function NoteCard({
   tags,
   type,
   description,
-}: // folder,
-NoteCardProps) {
+}: NoteCardProps) {
   const [isHovered, setIsHovered] = useState(false);
 
   const deleteNoteMutation = useMutation({
@@ -90,9 +88,9 @@ NoteCardProps) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
-      // Adjust hover behavior for mobile (onClick or touch interaction)
-      onMouseEnter={() => window.innerWidth > 768 && setIsHovered(true)}
-      onMouseLeave={() => window.innerWidth > 768 && setIsHovered(false)}
+      // Handle hover effects on mobile and desktop
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       onClick={() => window.innerWidth <= 768 && setIsHovered(!isHovered)}
     >
       <Card className="overflow-hidden h-fit w-[90vw] mx-auto md:w-[24vw] max-w-sm shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl">
@@ -123,8 +121,8 @@ NoteCardProps) {
         </CardHeader>
         <CardContent className="p-5 space-y-4">
           <motion.div
-            className={`flex justify-center border rounded-md bg-background overflow-hidden ${
-              isHovered ? "md:h-[12rem]" : "h-[8rem]"
+            className={`flex justify-center border rounded-md bg-background overflow-hidden transition-all duration-300 ease-in-out ${
+              isHovered ? "md:h-[12rem] h-[10rem]" : "h-[8rem]"
             }`}
             animate={{ height: isHovered ? "12rem" : "8rem" }}
             transition={{ duration: 0.3 }}
