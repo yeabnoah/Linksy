@@ -43,7 +43,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 
 const FILTERS = [
-  { label: "All Types", value: "" },
+  { label: "All-Types", value: "all" },
   { label: "Telegram", value: "telegram" },
   { label: "Twitter", value: "twitter" },
   { label: "Instagram", value: "instagram" },
@@ -61,7 +61,7 @@ export default function Folder({ params }: { params: { id: string } }) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [newFolderName, setNewFolderName] = useState("");
-  const [selectedFilter, setSelectedFilter] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
   const { singleFolder, setSingleFolder } = useSingleFoldersStore();
@@ -131,8 +131,13 @@ export default function Folder({ params }: { params: { id: string } }) {
   });
 
   const filteredContent = singleFolder?.content.filter((bookmark) => {
-    if (!selectedFilter && !searchQuery) return true;
-    if (selectedFilter && bookmark.type !== selectedFilter) return false;
+    if (selectedFilter === "all" && !searchQuery) return true; // Show all items
+    if (
+      selectedFilter !== "all" &&
+      selectedFilter &&
+      bookmark.type !== selectedFilter
+    )
+      return false;
     if (searchQuery) {
       return (
         bookmark.tags
@@ -195,7 +200,7 @@ export default function Folder({ params }: { params: { id: string } }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="bookmarks-list grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
+        className=" flex md:flex-row flex-col mx-auto w-full gap-5 md:flex-wrap"
       >
         {filteredContent.map((bookmark) => (
           <NoteCard
@@ -220,7 +225,7 @@ export default function Folder({ params }: { params: { id: string } }) {
 
   return (
     <div className="max-w-7xl mx-auto mt-5 px-4 sm:px-6 lg:px-8">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+      <div className="flex flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <Link href="/" className="flex items-center gap-2">
           <div className="h-6 w-6 md:h-8 md:w-8 rounded-full bg-foreground flex items-center justify-center">
             <div className="w-3 h-3 md:w-4 md:h-4 bg-background rounded-full" />
@@ -243,7 +248,7 @@ export default function Folder({ params }: { params: { id: string } }) {
         </div>
       </div>
 
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center my-5 gap-4">
+      <div className="flex flex-row justify-between items-start sm:items-center my-5 gap-4">
         <div className="flex items-center gap-2 sm:gap-5">
           <Button
             onClick={() => router.back()}
