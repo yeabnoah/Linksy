@@ -20,7 +20,6 @@ import {
   TwitterIcon,
   YoutubeIcon,
 } from "lucide-react";
-import { useState } from "react";
 import toast from "react-hot-toast";
 import {
   FacebookEmbed,
@@ -58,8 +57,6 @@ export function NoteCard({
   type,
   description,
 }: NoteCardProps) {
-  const [isHovered, setIsHovered] = useState(false);
-
   const deleteNoteMutation = useMutation({
     mutationFn: async (id: number) => {
       const response = await axios.delete(`/api/v1/content/${id}`, {
@@ -88,12 +85,8 @@ export function NoteCard({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
-      // Handle hover effects on mobile and desktop
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onClick={() => window.innerWidth <= 768 && setIsHovered(!isHovered)}
     >
-      <Card className="overflow-hidden h-fit w-[90vw] mx-auto md:w-[24vw] max-w-sm shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl">
+      <Card className="overflow-hidden h-fit w-[90vw] mx-auto md:w-[24vw] max-w-sm shadow-lg">
         <CardHeader className="flex items-center flex-row justify-between space-y-0 pb-2 bg-primary/5">
           <div className="flex items-center gap-3">
             {TypeIcon && <TypeIcon className="text-primary w-5 h-5" />}
@@ -108,7 +101,7 @@ export function NoteCard({
                   onClick={handleDelete}
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 hover:bg-destructive/10 hover:text-destructive transition-colors duration-200"
+                  className="h-8 w-8"
                 >
                   <Trash2 className="w-4 h-4" />
                 </Button>
@@ -120,13 +113,7 @@ export function NoteCard({
           </TooltipProvider>
         </CardHeader>
         <CardContent className="p-5 space-y-4">
-          <motion.div
-            className={`flex justify-center border rounded-md bg-background overflow-hidden transition-all duration-300 ease-in-out ${
-              isHovered ? "md:h-[12rem] h-[10rem]" : "h-[8rem]"
-            }`}
-            animate={{ height: isHovered ? "12rem" : "8rem" }}
-            transition={{ duration: 0.3 }}
-          >
+          <div className="flex justify-center border rounded-md bg-background overflow-hidden h-[8rem]">
             {type === "twitter" && (
               <XEmbed url={link} className="w-full rounded-md" />
             )}
@@ -164,26 +151,24 @@ export function NoteCard({
             )}
             {type === "tiktok" && <TikTokEmbed url={link} />}
             {type === "facebook" && <FacebookEmbed url={link} />}
-          </motion.div>
+          </div>
           <AnimatePresence>
-            {isHovered && (
-              <motion.p
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.2 }}
-                className="text-sm leading-relaxed text-muted-foreground"
-              >
-                {description}
-              </motion.p>
-            )}
+            <motion.p
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.2 }}
+              className="text-sm leading-relaxed text-muted-foreground"
+            >
+              {description}
+            </motion.p>
           </AnimatePresence>
           <div className="flex items-center justify-between">
             <div className="flex flex-wrap gap-2">
               {tags.map((tag) => (
                 <span
                   key={tag}
-                  className="inline-flex items-center text-xs font-medium text-primary bg-primary/10 px-2.5 py-0.5 rounded-full transition-colors duration-200 hover:bg-primary/20"
+                  className="inline-flex items-center text-xs font-medium text-primary bg-primary/10 px-2.5 py-0.5 rounded-full"
                 >
                   #{tag}
                 </span>
@@ -196,7 +181,7 @@ export function NoteCard({
                     href={link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-primary hover:text-primary/80 transition-colors duration-200"
+                    className="text-primary"
                   >
                     <ExternalLinkIcon className="w-5 h-5" />
                   </a>
