@@ -58,15 +58,15 @@ To get started with the project locally, follow these steps:
 
 - Set up environment variables: Create a .env file at the root of the project and add the following variables:
 
-`DATABASE_URL=your_postgresql_database_url
+`DATABASE_URL=your_postgresql_database_url`
 
-GITHUB_CLIENT_ID=your_github_oauth_client_id
+`GITHUB_CLIENT_ID=your_github_oauth_client_id`
 
-GITHUB_CLIENT_SECRET=your_github_oauth_client_secret
+`GITHUB_CLIENT_SECRET=your_github_oauth_client_secret`
 
-BETTER_AUTH_SECRET=your_better_auth_secret
+`BETTER_AUTH_SECRET=your_better_auth_secret`
 
-BETTER_AUTH_URL=your_better_auth_url`
+`BETTER_AUTH_URL=your_better_auth_url`
 
 ## Configure authentication client
 
@@ -92,18 +92,12 @@ BETTER_AUTH_URL=your_better_auth_url`
 
 ### Make your changes and commit them
 
-`git add .
+`git add .`
 
-git commit -m "Add your commit message"`
+`git commit -m "Add your commit message"`
 
 ### Push your changes to your fork
 
-    - `git push origin feature/your-feature-name`
+    `git push origin feature/your-feature-name`
 
 ### Create a pull request on GitHub from your branch to the main repository.
-
-## License
-
-- This project is licensed under the MIT License - see the LICENSE file for details.
-
-- Make sure to replace the placeholders like `your-username` and other environment variable values with the actual details. Let me know if you need anything else!

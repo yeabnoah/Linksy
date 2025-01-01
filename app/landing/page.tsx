@@ -44,12 +44,12 @@ export default function Homer() {
                 href="https://github.com/yeabnoah/linksy"
                 target="_blank"
                 rel="noopener noreferrer"
-                className=" flex items-center w-fit gap-2 px-3 py-1 mx-auto  bg-black/85 text-white border rounded-3xl border-black/40"
+                className=" flex items-center w-fit gap-2 px-5 py-1 mx-auto  bg-black/85 text-white border rounded-3xl border-black/40"
               >
-                <span className=" text-xl text-white text-center font-semibold">
+                <span className=" text-lg text-white text-center font-semibold">
                   {starCount}
                 </span>
-                <span className=" text-xl text-white text-center font-semibold">
+                <span className=" text-lg text-white text-center font-semibold">
                   Stars on GitHub
                 </span>
               </a>
