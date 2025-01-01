@@ -30,6 +30,28 @@ export default function Homer() {
 
       <main className="px-4 ">
         <div className="max-w-4xl mx-auto text-center pt-20 pb-16">
+          <div className="mt-8">
+            {isLoading ? (
+              <p className="text-lg text-muted-foreground mb-4">
+                Loading star count...
+              </p>
+            ) : error ? (
+              <p className="text-lg text-red-500 mb-4">
+                Error fetching star count.
+              </p>
+            ) : (
+              <a
+                href="https://github.com/yeabnoah/linksy"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {starCount}
+                <Button size="lg" className="font-medium">
+                  Stars on GitHub
+                </Button>
+              </a>
+            )}
+          </div>
           <h1 className="scroll-m-20 text-3xl md:text-5xl font-extrabold tracking-tight mb-6">
             Save and Manage
             <br />
@@ -50,33 +72,6 @@ export default function Homer() {
             >
               Get Started
             </Button>
-          </div>
-
-          {/* GitHub Star Count and Button */}
-          <div className="mt-8">
-            {isLoading ? (
-              <p className="text-lg text-muted-foreground mb-4">
-                Loading star count...
-              </p>
-            ) : error ? (
-              <p className="text-lg text-red-500 mb-4">
-                Error fetching star count.
-              </p>
-            ) : (
-              <p className="text-lg text-muted-foreground mb-4">
-                This project has {starCount} stars on GitHub.
-              </p>
-            )}
-
-            <a
-              href="https://github.com/your-username/your-repo-name"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Button size="lg" className="font-medium">
-                ⭐ Star on GitHub
-              </Button>
-            </a>
           </div>
         </div>
 
