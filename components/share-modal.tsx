@@ -94,7 +94,7 @@ export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className=" max-w-[95%]  rounded-md sm:max-w-md md:max-w-xl p-0 overflow-hidden">
+      <DialogContent className=" max-w-[90%] mx-auto md:w-fit rounded-md sm:max-w-md md:max-w-xl p-0 overflow-hidden">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
