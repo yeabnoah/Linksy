@@ -30,7 +30,7 @@ export default function Homer() {
 
       <main className="px-4 ">
         <div className="max-w-4xl mx-auto text-center pt-20 pb-16">
-          <div className="mt-8">
+          <div className="mt-8 mx-auto justify-center">
             {isLoading ? (
               <p className="text-lg text-muted-foreground mb-4">
                 Loading star count...
@@ -44,7 +44,7 @@ export default function Homer() {
                 href="https://github.com/yeabnoah/linksy"
                 target="_blank"
                 rel="noopener noreferrer"
-                className=" flex items-center w-fit gap-2 p-3 bg-black/85 text-white border rounded-3xl border-black/40"
+                className=" flex items-center w-fit gap-2 px-3 py-1 mx-auto  bg-black/85 text-white border rounded-3xl border-black/40"
               >
                 <span className=" text-xl text-white text-center font-semibold">
                   {starCount}
@@ -55,7 +55,7 @@ export default function Homer() {
               </a>
             )}
           </div>
-          <h1 className="scroll-m-20 text-3xl md:text-5xl font-extrabold tracking-tight mb-6">
+          <h1 className=" mt-8 scroll-m-20 text-3xl md:text-5xl font-extrabold tracking-tight mb-6">
             Save and Manage
             <br />
             bookmarks <span className="text-xl font-thin"> (posts).</span>
