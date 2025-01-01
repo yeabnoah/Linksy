@@ -121,7 +121,7 @@ export function ShareModalFolder({
           <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
             <div className="space-y-2">
               <h2 className="text-xl sm:text-2xl font-bold tracking-tight dark:text-white">
-                Share Your Folder with Bookmark List
+                Share Your Folder with the link collection
               </h2>
               <p className="text-sm text-muted-foreground leading-relaxed dark:text-gray-300">
                 Share your entire collection of bookmarks inside of your folder.

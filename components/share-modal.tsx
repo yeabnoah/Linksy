@@ -94,7 +94,7 @@ export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className=" max-w-[90%] mx-auto md:w-fit rounded-md sm:max-w-md md:max-w-xl p-0 overflow-hidden">
+      <DialogContent className=" w-[90%] px-2 mx-auto md:w-fit rounded-md sm:max-w-md md:max-w-xl p-0">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -102,12 +102,12 @@ export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
           transition={{ duration: 0.3 }}
           className="p-4 sm:p-6 space-y-4 sm:space-y-6"
         >
-          <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+          <div className="flex flex-col md:flex-row justify-between items-start gap-4">
             <div className="space-y-2 w-full sm:w-auto">
               <h2 className="text-xl sm:text-2xl font-bold tracking-tight">
-                Share Your Bookmark List
+                Share Your Entire Collection of Links
               </h2>
-              <p className="text-sm text-wrap text-muted-foreground leading-relaxed">
+              <p className="text-sm  text-wrap text-muted-foreground leading-relaxed">
                 Share your entire collection of notes, documents, tweets, and
                 videos with others. They&apos;ll be able to see all your
                 bookmarks.
@@ -125,9 +125,9 @@ export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
                 transition={{ duration: 0.3 }}
                 className="space-y-4"
               >
-                <div className="flex items-center space-x-2 rounded-lg bg-muted p-3 text-sm">
+                <div className="flex items-center text-wrap space-x-2 rounded-lg bg-muted p-3 text-sm">
                   <Share2 className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
-                  <span className="text-xs text-wrap sm:text-sm">{link}</span>
+                  <span className="text-xs text-wrap md:text-sm">{link}</span>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3">
                   <Button
