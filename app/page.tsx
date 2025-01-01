@@ -232,16 +232,15 @@ export default function Home() {
               <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
                 {renderFolders()}
               </div>
-              {folder.length > 4 &&
-                -(
-                  <Button
-                    onClick={() => setShowAllFolders(!showAllFolders)}
-                    className="mt-4"
-                    variant="link"
-                  >
-                    {showAllFolders ? "Show Less" : "Show More"}
-                  </Button>
-                )}
+              {folder.length > 4 && (
+                <Button
+                  onClick={() => setShowAllFolders(!showAllFolders)}
+                  className="mt-4"
+                  variant="link"
+                >
+                  {showAllFolders ? "Show Less" : "Show More"}
+                </Button>
+              )}
             </>
           )}
         </div>

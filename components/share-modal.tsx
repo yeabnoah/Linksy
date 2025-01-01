@@ -107,7 +107,7 @@ export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
               <h2 className="text-xl sm:text-2xl font-bold tracking-tight">
                 Share Your Bookmark List
               </h2>
-              <p className="text-sm text-muted-foreground leading-relaxed">
+              <p className="text-sm text-wrap text-muted-foreground leading-relaxed">
                 Share your entire collection of notes, documents, tweets, and
                 videos with others. They&apos;ll be able to see all your
                 bookmarks.
@@ -127,9 +127,7 @@ export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
               >
                 <div className="flex items-center space-x-2 rounded-lg bg-muted p-3 text-sm">
                   <Share2 className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
-                  <span className="flex-1 truncate text-xs text-wrap sm:text-sm">
-                    {link}
-                  </span>
+                  <span className="text-xs text-wrap sm:text-sm">{link}</span>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3">
                   <Button
