@@ -79,7 +79,7 @@ export default function SignUpPage() {
 
   const session = authClient.useSession();
 
-  if (session.data?.user) {
+  if (session) {
     redirect("/");
   }
 
