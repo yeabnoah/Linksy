@@ -16,7 +16,7 @@ import { motion } from "framer-motion";
 import { EyeIcon, EyeOffIcon, Loader2, Upload, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 
@@ -32,6 +32,7 @@ export default function SignUpPage() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -64,6 +65,7 @@ export default function SignUpPage() {
 
       if (data) {
         toast.success("Signed up successfully!");
+        router.push("/");
       }
 
       if (error) {
