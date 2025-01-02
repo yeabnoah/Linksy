@@ -39,8 +39,18 @@ export default function SignIn() {
   const handleSignIn = async () => {
     setLoading(true);
     try {
-      await authClient.signIn.email({ email, password });
-      toast.success("Signed in successfully!");
+      const { data, error } = await authClient.signIn.email({
+        email: email,
+        password: password,
+      });
+
+      if (data) {
+        toast.success("Signed in successfully!");
+      }
+
+      if (error) {
+        toast.error("Signed in failed!");
+      }
     } catch (error) {
       console.error("Sign in failed:", error);
       toast.error("Sign in failed. Please try again.");
