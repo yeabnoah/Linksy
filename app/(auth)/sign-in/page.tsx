@@ -1,16 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { authClient } from "@/lib/auth-client";
-import {
-  EyeIcon as EyeClosedIcon,
-  EyeIcon,
-  Loader2,
-  Github,
-} from "lucide-react";
-import Link from "next/link";
-import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -22,6 +11,16 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { authClient } from "@/lib/auth-client";
+import { motion } from "framer-motion";
+import {
+  EyeIcon as EyeClosedIcon,
+  EyeIcon,
+  Github,
+  Loader2,
+} from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
 export default function SignIn() {
@@ -29,12 +28,6 @@ export default function SignIn() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(false);
-
-  const session = authClient.useSession();
-
-  if (session.data?.session) {
-    redirect("/");
-  }
 
   const handleSignIn = async () => {
     setLoading(true);
