@@ -28,7 +28,7 @@ export default function Homer() {
   const session = authClient.useSession();
 
   if (session.data?.user) {
-    redirect("/");
+    router.push("/")
   }
 
   return (
