@@ -5,7 +5,7 @@ import { Nav } from "@/components/nav";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 
 const fetchStarCount = async () => {
   const response = await fetch("https://api.github.com/repos/yeabnoah/linksy");
@@ -28,7 +28,7 @@ export default function Homer() {
   const session = authClient.useSession();
 
   if (session.data?.session) {
-    router.push("/");
+    redirect("/");
   }
 
   return (
