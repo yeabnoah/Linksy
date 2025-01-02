@@ -16,6 +16,7 @@ import { motion } from "framer-motion";
 import { EyeIcon, EyeOffIcon, Loader2, Upload, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 
@@ -31,6 +32,7 @@ export default function SignUpPage() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter(); // Router instance
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -51,42 +53,38 @@ export default function SignUpPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (formData.password !== formData.passwordConfirmation) {
+      toast.error("Passwords do not match!");
+      return;
+    }
+
     setLoading(true);
     try {
-      await authClient.signUp.email({
+      const result = await authClient.signUp.email({
         email: formData.email,
         password: formData.password,
         name: `${formData.firstName} ${formData.lastName}`,
         image: image ? await convertImageToBase64(image) : "",
-        callbackURL: "/",
-
-        fetchOptions: {
-          onSuccess: () => {
-            toast.success("Signed up successfully!");
-          },
-
-          onError: () => {
-            toast.error("Sign up failed!");
-          },
-        },
       });
+
+      if (result.error) {
+        throw new Error(result.error.message);
+      }
+
+      toast.success("Signed up successfully!");
+      router.push("/");
     } catch (error) {
       console.error("Sign up failed:", error);
-      toast.error("Sign up failed. Please try again.");
+      toast.error(`${error} || "Sign up failed. Please try again.`);
     } finally {
       setLoading(false);
     }
   };
 
-  // const session = authClient.useSession();
-
-  // if (session.data?.session) {
-  //   redirect("/");
-  // }
-
   return (
     <div className="flex justify-center min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 p-4">
-      <div className="w-full max-w-md  md:max-w-xl  flex justify-center items-center">
+      <div className="w-full max-w-md md:max-w-xl flex justify-center items-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -112,7 +110,6 @@ export default function SignUpPage() {
                       name="firstName"
                       placeholder="John"
                       required
-                      className=" text-sm md:text-base"
                       value={formData.firstName}
                       onChange={handleInputChange}
                     />
@@ -124,7 +121,6 @@ export default function SignUpPage() {
                       name="lastName"
                       placeholder="Doe"
                       required
-                      className=" text-sm md:text-base"
                       value={formData.lastName}
                       onChange={handleInputChange}
                     />
@@ -136,7 +132,6 @@ export default function SignUpPage() {
                     id="email"
                     name="email"
                     type="email"
-                    className=" text-sm md:text-base"
                     placeholder="john@example.com"
                     required
                     value={formData.email}
@@ -153,13 +148,13 @@ export default function SignUpPage() {
                       required
                       value={formData.password}
                       onChange={handleInputChange}
-                      className="pr-10 text-sm md:text-base"
+                      className="pr-10"
                     />
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
-                      className="absolute text-sm md:text-base right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? (
@@ -177,7 +172,6 @@ export default function SignUpPage() {
                     name="passwordConfirmation"
                     type="password"
                     required
-                    className=" text-sm md:text-base"
                     value={formData.passwordConfirmation}
                     onChange={handleInputChange}
                   />
@@ -192,7 +186,6 @@ export default function SignUpPage() {
                           alt="Profile preview"
                           layout="fill"
                           objectFit="cover"
-                          className=" text-sm md:text-base"
                         />
                       </div>
                     )}
@@ -216,7 +209,6 @@ export default function SignUpPage() {
                           type="button"
                           variant="ghost"
                           size="sm"
-                          className="ml-2"
                           onClick={() => {
                             setImage(null);
                             setImagePreview(null);
