@@ -1,13 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import { redirect, useRouter } from "next/navigation";
-import Image from "next/image";
-import Link from "next/link";
-import { motion } from "framer-motion";
-import { toast } from "react-hot-toast";
-import { EyeIcon, EyeOffIcon, Loader2, X, Upload } from "lucide-react";
-import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,6 +11,14 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { authClient } from "@/lib/auth-client";
+import { motion } from "framer-motion";
+import { EyeIcon, EyeOffIcon, Loader2, Upload, X } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { useState } from "react";
+import { toast } from "react-hot-toast";
 
 export default function SignUpPage() {
   const [formData, setFormData] = useState({
@@ -32,7 +32,6 @@ export default function SignUpPage() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const router = useRouter();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -65,14 +64,14 @@ export default function SignUpPage() {
 
       if (data) {
         toast.success("Signed up successfully!");
-        router.push("/");
       }
 
       if (error) {
-        toast.error("sign up failed!");
+        toast.error("Sign up failed!");
       }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Sign up failed");
+      console.error("Sign up failed:", error);
+      toast.error("Sign up failed. Please try again.");
     } finally {
       setLoading(false);
     }

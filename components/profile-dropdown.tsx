@@ -48,8 +48,13 @@ export function ProfileDropdown({ user }: ProfileDropdownProps) {
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={async () => {
-            await authClient.signOut();
-            router.push("/landing");
+            await authClient.signOut({
+              fetchOptions: {
+                onSuccess: () => {
+                  router.push("/landing");
+                },
+              },
+            });
           }}
         >
           Log out

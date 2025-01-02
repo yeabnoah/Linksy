@@ -42,6 +42,7 @@ export default function SignIn() {
       const { data, error } = await authClient.signIn.email({
         email: email,
         password: password,
+        callbackURL: "/",
       });
 
       if (data) {
