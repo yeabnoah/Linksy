@@ -8,7 +8,6 @@ export default async function authMiddleware(request: NextRequest) {
     {
       baseURL: request.nextUrl.origin,
       headers: {
-        //get the cookie from the request
         cookie: request.headers.get("cookie") || "",
       },
     }
@@ -21,5 +20,5 @@ export default async function authMiddleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/"],
+  matcher: ["/((?!landing|sign-in|sign-up).*)"],
 };
