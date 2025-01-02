@@ -32,7 +32,7 @@ export default function SignIn() {
 
   const session = authClient.useSession();
 
-  if (session) {
+  if (session.data?.session) {
     redirect("/");
   }
 

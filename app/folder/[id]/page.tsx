@@ -38,7 +38,7 @@ import {
   Trash,
 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 
@@ -66,9 +66,14 @@ export default function Folder({ params }: { params: { id: string } }) {
 
   const { singleFolder, setSingleFolder } = useSingleFoldersStore();
   const session = authClient.useSession();
+
   const router = useRouter();
   const queryClient = useQueryClient();
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+
+  if (!session.data?.session) {
+    redirect("/landing");
+  }
 
   useEffect(() => {
     if (singleFolder) {

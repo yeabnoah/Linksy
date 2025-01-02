@@ -93,7 +93,7 @@ export default function Home() {
 
   const session = authClient.useSession();
 
-  if (!session) {
+  if (!session.data?.session) {
     redirect("/landing");
   }
 
