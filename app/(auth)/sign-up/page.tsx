@@ -16,7 +16,6 @@ import { motion } from "framer-motion";
 import { EyeIcon, EyeOffIcon, Loader2, Upload, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 
@@ -59,6 +58,7 @@ export default function SignUpPage() {
         password: formData.password,
         name: `${formData.firstName} ${formData.lastName}`,
         image: image ? await convertImageToBase64(image) : "",
+        callbackURL: "/",
       });
 
       if (data) {
@@ -76,11 +76,11 @@ export default function SignUpPage() {
     }
   };
 
-  const session = authClient.useSession();
+  // const session = authClient.useSession();
 
-  if (session.data?.session) {
-    redirect("/");
-  }
+  // if (session.data?.session) {
+  //   redirect("/");
+  // }
 
   return (
     <div className="flex justify-center min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 p-4">

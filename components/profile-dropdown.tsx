@@ -52,7 +52,7 @@ export function ProfileDropdown({ user }: ProfileDropdownProps) {
             await authClient.signOut({
               fetchOptions: {
                 onSuccess: () => {
-                  router.push("/");
+                  router.push("/login");
                 },
               },
             });
