@@ -17,7 +17,7 @@ import axios from "axios";
 import { AnimatePresence, motion } from "framer-motion";
 import { FolderIcon, Plus, Search, Share2 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 type ButtonVariant =
@@ -92,6 +92,10 @@ export default function Home() {
   });
 
   const session = authClient.useSession();
+
+  if (!session.data?.user) {
+    redirect("/landing");
+  }
 
   useEffect(() => {
     refetchBookmarks();

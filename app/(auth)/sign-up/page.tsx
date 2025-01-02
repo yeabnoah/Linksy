@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -55,20 +55,34 @@ export default function SignUpPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      await authClient.signUp.email({
+      const { data, error } = await authClient.signUp.email({
         email: formData.email,
         password: formData.password,
         name: `${formData.firstName} ${formData.lastName}`,
         image: image ? await convertImageToBase64(image) : "",
         callbackURL: "/",
       });
-      router.push("/");
+
+      if (data) {
+        toast.success("Signed up successfully!");
+        router.push("/");
+      }
+
+      if (error) {
+        toast.error("sign up failed!");
+      }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Sign up failed");
     } finally {
       setLoading(false);
     }
   };
+
+  const session = authClient.useSession();
+
+  if (session.data?.user) {
+    redirect("/");
+  }
 
   return (
     <div className="flex justify-center min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 p-4">
