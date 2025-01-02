@@ -59,7 +59,6 @@ export default function SignUpPage() {
         password: formData.password,
         name: `${formData.firstName} ${formData.lastName}`,
         image: image ? await convertImageToBase64(image) : "",
-        callbackURL: "/",
       });
 
       if (data) {
