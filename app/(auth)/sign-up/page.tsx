@@ -53,21 +53,23 @@ export default function SignUpPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      const { data, error } = await authClient.signUp.email({
+      await authClient.signUp.email({
         email: formData.email,
         password: formData.password,
         name: `${formData.firstName} ${formData.lastName}`,
         image: image ? await convertImageToBase64(image) : "",
         callbackURL: "/",
+
+        fetchOptions: {
+          onSuccess: () => {
+            toast.success("Signed up successfully!");
+          },
+
+          onError: () => {
+            toast.error("Sign up failed!");
+          },
+        },
       });
-
-      if (data) {
-        toast.success("Signed up successfully!");
-      }
-
-      if (error) {
-        toast.error("Sign up failed!");
-      }
     } catch (error) {
       console.error("Sign up failed:", error);
       toast.error("Sign up failed. Please try again.");
