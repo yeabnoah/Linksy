@@ -94,7 +94,7 @@ export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className=" w-[90vw] mx-auto md:w-fit rounded-md sm:max-w-md md:max-w-xl p-0">
+      <DialogContent className=" w-[90vw] mx-auto rounded-md sm:max-w-xl p-0">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -102,7 +102,7 @@ export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
           transition={{ duration: 0.3 }}
           className="p-4 sm:p-6 space-y-4 md:space-y-6  w-[90vw]"
         >
-          <div className="flex flex-col md:flex-row justify-between items-start gap-4">
+          <div className="flex flex-col md:max-w-md md:flex-row justify-between items-start gap-4">
             <div className="space-y-2 w-full sm:w-auto">
               <h2 className="text-xl sm:text-2xl font-bold tracking-tight">
                 Share Your Entire Collection
@@ -123,9 +123,9 @@ export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.3 }}
-                className="space-y-4"
+                className="space-y-4 max-w-md"
               >
-                <div className="flex items-center space-x-2 w-[90vw]  rounded-lg bg-muted p-3 text-sm">
+                <div className="flex items-center space-x-2 rounded-lg bg-muted p-3 text-sm">
                   <Share2 className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
                   <span className="text-xs text-wrap md:text-sm">{link}</span>
                 </div>
@@ -158,7 +158,7 @@ export function ShareModal({ isOpen, onClose, itemCount }: ShareModalProps) {
               >
                 {!isLoading && (
                   <Button
-                    className="w-full font-medium bg-primary hover:bg-primary/90"
+                    className="  font-medium bg-primary hover:bg-primary/90"
                     onClick={handleStartSharing}
                   >
                     <Share2 className="w-4 h-4 mr-2" />

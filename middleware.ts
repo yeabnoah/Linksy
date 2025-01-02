@@ -15,7 +15,7 @@ export default async function authMiddleware(request: NextRequest) {
   );
 
   if (!session) {
-    return NextResponse.redirect(new URL("/landin g", request.url));
+    return NextResponse.redirect(new URL("/landing", request.url));
   }
   return NextResponse.next();
 }
