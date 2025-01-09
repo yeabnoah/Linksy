@@ -164,6 +164,7 @@ export default function SignUpPage() {
                       )}
                     </Button>
                   </div>
+                  {/* change made */}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="passwordConfirmation">Confirm Password</Label>
